@@ -1,0 +1,6 @@
+.sidebar {
+  width: 280px;
+  background-color: #212529;
+  padding: 10px;
+  height: 90vh;
+transition: background-color 1s ease;}

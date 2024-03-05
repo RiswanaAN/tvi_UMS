@@ -1,0 +1,84 @@
+/* DataTable.css
+.data-table {
+  flex: 1;
+  margin-left: 0;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.open + .data-table {
+  margin-left: 220px; /* Shift position when sidebar is open */
+/* }  */
+/* DataTable.css */
+/* .data-table {
+  flex: 1;
+  margin-left: 0;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.open + .data-table {
+  margin-left: 220px; /* Shift position when sidebar is open */
+/* } */ 
+/* DataTable.css */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  /* border: 1px solid red; */
+}
+
+.data-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.data-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.data-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.data-table tr:hover {
+  background-color: #ddd;
+}
+
+.edit-button,
+.delete-button, .view-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  color: #007bff;
+}
+
+.edit-button:focus,
+.delete-button:focus {
+  outline: none;
+}
+
+.iconEdit, .iconRemove, .iconView {
+  vertical-align: middle;
+}
+.iconEdit{
+  color: green;
+}
+.iconRemove{
+  color: red;
+}
+.iconView{
+  color: #007bff;
+}
+.header-cell {
+  font-weight: bold;
+}

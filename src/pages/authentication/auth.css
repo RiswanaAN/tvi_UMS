@@ -1,0 +1,11 @@
+* {
+  font-family: sans-serif;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus,
+input[type="checkbox"]:focus,
+textarea:focus {
+  box-shadow: 0 0 5px #007bff;
+}
