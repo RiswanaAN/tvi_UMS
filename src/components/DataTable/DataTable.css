@@ -1,29 +1,9 @@
-/* DataTable.css
-.data-table {
-  flex: 1;
-  margin-left: 0;
-  transition: margin-left 0.3s ease-in-out;
-}
 
-.open + .data-table {
-  margin-left: 220px; /* Shift position when sidebar is open */
-/* }  */
-/* DataTable.css */
-/* .data-table {
-  flex: 1;
-  margin-left: 0;
-  transition: margin-left 0.3s ease-in-out;
-}
-
-.open + .data-table {
-  margin-left: 220px; /* Shift position when sidebar is open */
-/* } */ 
-/* DataTable.css */
-.table-container {
+/* .table-container {
   width: 100%;
-  overflow-x: auto;
+  overflow-x: auto; */
   /* border: 1px solid red; */
-}
+/* } */
 
 .data-table {
   border-collapse: collapse;
@@ -76,9 +56,9 @@
 .iconRemove{
   color: red;
 }
-.iconView{
+/* .iconView{
   color: #007bff;
-}
+} */
 .header-cell {
   font-weight: bold;
 }

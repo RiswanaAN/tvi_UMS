@@ -10,9 +10,13 @@ export const userSlice= createSlice({
         setToken: (state, action)=>{
             state.adminToken= action.payload;
             window.localStorage.setItem("tokenStorage", action.payload)
+        },
+        removeToken: (state)=>{
+            state.adminToken= null;
+            window.localStorage.removeItem("tokenStorage")
         }
     }
 })
 
-export const {setToken}= userSlice.actions
+export const {setToken, removeToken}= userSlice.actions
 export default userSlice.reducer

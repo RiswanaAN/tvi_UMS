@@ -1,0 +1,11 @@
+.input-field .input-control::placeholder {
+    transition: transform 1s;
+  }
+  .input-field .input-control {
+    transition: border 0.1s;
+  }
+  .input-field .input-control:active::placeholder,
+.input-field .input-control:focus::placeholder,
+.input-field .input-control:valid::placeholder {
+  transform: translateX(5px);
+}

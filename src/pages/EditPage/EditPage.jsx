@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import ConfirmationModal from "../../components/NavBar/ConfirmationModal";
 
 const style = {
   position: "absolute",
@@ -31,6 +31,8 @@ export default function EditPage(props) {
   const [email, setEmail] = useState(user.email);
   const [role, setRole] = useState(user.role);
   const [password, setPassword] = useState(user.password);
+  //modal
+  const [editConfirmation, setEditConfirmation] = useState(false);
   useEffect(() => {
     props.userDetails.map((userD) => {
       if (userD.id == props.editId) {
@@ -38,21 +40,17 @@ export default function EditPage(props) {
         console.log(userD);
       }
     });
-    axios
-      .get("http://localhost:8000/api/user/" + props.editId, {
-        headers: {
-          Authorization: adminToken || tokenFromLS,
-          genericvalue: "admin",
-        },
-      })
-      .then((response) => {
-        // setFirstName(response.data.firstName);
-        // setLastName(response.data.lastName);
-        // setEmail(response.data.email);
-        // setRole(response.data.role);
-        // setPassword(response.data.password);
-      });
+    axios.get("http://localhost:8000/api/user/" + props.editId, {
+      headers: {
+        Authorization: adminToken || tokenFromLS,
+        genericvalue: "admin",
+      },
+    });
   }, []);
+  //editConfirmation
+  function editConfirm() {
+    setEditConfirmation(true);
+  }
   function editUser(e) {
     const user = {
       firstName: firstName,
@@ -61,12 +59,24 @@ export default function EditPage(props) {
       password: password,
       role: role,
     };
-    axios.put("http://localhost:8000/api/update/" + props.editId, user, {
-      headers: {
-        Authorization: adminToken || tokenFromLS,
-        genericvalue: "admin",
-      },
-    });
+    axios
+      .put("http://localhost:8000/api/update/" + props.editId, user, {
+        headers: {
+          Authorization: adminToken || tokenFromLS,
+          genericvalue: "admin",
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        props.listUser();
+        handleClose();
+        setEditConfirmation(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        props.listUser();
+        handleClose();
+      });
   }
 
   return (
@@ -172,17 +182,29 @@ export default function EditPage(props) {
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <div className="w-full">
-                <button
-                  type="submit"
-                  className="text-white bg-[#007bff] hover:bg-blue-600 block font-medium rounded-md text-sm mt-3  px-5 py-2.5 text-center"
-                  onClick={editUser}
-                >
-                  Edit
-                </button>
-              </div>
             </form>
           </Typography>
+          <div className="w-full">
+            <button
+              type="submit"
+              className="text-white bg-[#007bff] hover:bg-blue-600 block font-medium rounded-md text-sm mt-3  px-5 py-2.5 text-center"
+              onClick={editConfirm}
+            >
+              Edit
+            </button>
+            {editConfirmation ? (
+              <ConfirmationModal
+                open={editConfirmation}
+                setOpen={setEditConfirmation}
+                handleOpen={editConfirm}
+                message="edit"
+                editId={props.editId}
+                editUser={editUser}
+              />
+            ) : (
+              ""
+            )}
+          </div>
         </Box>
       </Modal>
     </div>

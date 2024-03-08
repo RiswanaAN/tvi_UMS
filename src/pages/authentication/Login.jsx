@@ -1,19 +1,21 @@
 import { useState } from "react";
-import React from "react";
-import "./auth.css";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import axios from "axios";
 import { setToken } from "../../redux/slice/userSlice";
 import UserRegister from "../User/UserRegister";
+import "./auth.css";
 
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState("");//admin@gmail.com
-  const [password, setPassword] = useState("");//admin@12345
-  const userDetails= useSelector((state)=> state.auth.user)
+  const [email, setEmail] = useState(""); //admin@gmail.com
+  const [password, setPassword] = useState(""); //admin@12345
+  const [message, setMessage] = useState(false); //email validation
+  const [passMessage, setPassMessage] = useState(false); //password validation
+  const userDetails = useSelector((state) => state.auth.user);
   function loginUser(e) {
     e.preventDefault();
     const user = {
@@ -26,28 +28,48 @@ function Login() {
         const token = response.data.access_token;
 
         dispatch(setToken(token));
-        // console.log("Token:", token);
-        if(response.data.role =="admin"){
+        // console.log(response.data);
+        if (response.data.role == "admin") {
           navigate("/login/homepage");
-        }
-        else if (response.data.role== "agent") {
-          console.log(response);
+        } else if (response.data.role == "agent") {
+          // console.log(response);
           navigate("/user/userHomepage");
-        }
-        else if (response.data.role== "supervisor") {
-          console.log(response);
+        } else if (response.data.role == "supervisor") {
+          // console.log(response);
           navigate("/supervisorPage");
-        } 
-         else {
+        } else {
           console.log("Not Login");
         }
-        
       })
       .catch((error) => console.log(error));
   }
   function userRegister() {
     setOpen(true);
   }
+  //validation
+  const emailvalidation = (e) => {
+    var pattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+    var emailValue = e.target.value;
+    setEmail(emailValue);
+    if (email.match(pattern)) {
+      setMessage(true);
+    } else {
+      console.log("Email should be in 'exp@gmail.com'");
+    }
+  };
+
+  const passwordvalidation = (e) => {
+    var passPattern = /^(?=.*[a-zA-Z0-9]).{8,}$/;
+    var passwordvalue = e.target.value;
+    setPassword(passwordvalue);
+    if (password.match(passPattern)) {
+      setPassMessage(true);
+    } else {
+      console.log(
+        "Password should contain atleast 1 alphanumeric and min-length =8"
+      );
+    }
+  };
 
   return (
     <div className="h-[100vh] bg-[#007bff] border flex flex-col items-center">
@@ -64,16 +86,40 @@ function Login() {
               >
                 Email
               </label>
-              <input
-                type="email"
-                id="email"
-                className="bg-gray-50 border focus:outline-none border-gray-300 text-gray-900 rounded-md block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                placeholder="Enter email address"
-                required
-                value={email}
-                onInput={(e) => setEmail(e.target.value)}
-              />
+              <div className="input-field ">
+                <input
+                  type="email"
+                  id="email"
+                  className={`bg-gray-50 border focus:outline-none border-gray-300 text-gray-900 rounded-md block w-full p-3 ${
+                    email.length == 0
+                      ? "input-control fill-email"
+                      : message
+                      ? "input-control valid-email"
+                      : "input-control invalid-email"
+                  }`}
+                  placeholder="Enter email address"
+                  required
+                  value={email}
+                  onChange={emailvalidation}
+                />
+              </div>
             </div>
+            <p
+              className={`text-[13px] ${
+                email.length == 0
+                  ? "text-message fill-colour"
+                  : message
+                  ? "text-message success-colour"
+                  : "text-message error-colour"
+              }`}
+            >
+              {/* Please fill in the email field */}
+              {email.length == 0
+                ? "Please fill in the email field"
+                : message
+                ? "Email you entered is valid"
+                : "Email you entered is invalid"}
+            </p>
 
             <div>
               <label
@@ -82,16 +128,40 @@ function Login() {
               >
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                className="bg-gray-50 border border-gray-300 focus:outline-none text-gray-900 rounded-md block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-                placeholder="Enter password"
-                required
-                value={password}
-                onInput={(e) => setPassword(e.target.value)}
-              />
+              <div className="input-field ">
+                <input
+                  type="password"
+                  id="password"
+                  className={`bg-gray-50 border focus:outline-none border-gray-300 text-gray-900 rounded-md block w-full p-3 ${
+                    password.length == 0
+                      ? "input-control fill-password"
+                      : passMessage
+                      ? "input-control valid-password"
+                      : "input-control invalid-password"
+                  }`}
+                  placeholder="Enter password"
+                  required
+                  value={password}
+                  onChange={passwordvalidation}
+                />
+              </div>
             </div>
+            <p
+              className={`text-[13px] ${
+                password.length == 0
+                  ? "text-message fill-colour"
+                  : passMessage
+                  ? "text-message success-colour"
+                  : "text-message error-colour"
+              }`}
+            >
+              {/* Please fill in the password field */}
+              {password.length == 0
+                ? "Please fill in the password field"
+                : passMessage
+                ? "password you entered is valid"
+                : "Should contain min 8 and atleast 1 alphanumeric character"}
+            </p>
           </div>
           <div className="flex items-center">
             <input type="checkbox" id="rememberPswd" required />

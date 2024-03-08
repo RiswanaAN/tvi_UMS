@@ -10,6 +10,7 @@ import EditPage from "../pages/EditPage/EditPage";
 import UserRegister from "../pages/User/UserRegister";
 import UserHomePage from "../pages/User/UserHomePage";
 import SupervisorDashboard from "../pages/Supervisor/SupervisorDashboard";
+import UserEditPage from "../pages/User/UserEditPage";
 
 const router= createBrowserRouter([
     {path: '/', element: <App />},
@@ -22,6 +23,7 @@ const router= createBrowserRouter([
     {path: '/homePage/editUser', element: <EditPage />},
     {path: '/userRegistration', element: <UserRegister />},
     {path: '/user/userHomepage', element: <UserHomePage />},
+    {path: '/user/userHomepage/userEdit', element: <UserEditPage />},
     {path: '/supervisorPage', element: <SupervisorDashboard />},
 ]);
 

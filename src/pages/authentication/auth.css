@@ -1,11 +1,56 @@
 * {
   font-family: sans-serif;
 }
-
+/*  */
 input[type="email"]:focus,
 input[type="password"]:focus,
 input[type="text"]:focus,
 input[type="checkbox"]:focus,
 textarea:focus {
   box-shadow: 0 0 5px #007bff;
+}
+.input-field .input-control {
+  transition: border 0.1s;
+}
+.input-field .input-control.valid-email {
+  box-shadow: 0 0 5px #007bff;
+}
+.input-field .input-control.invalid-email {
+  box-shadow: 0 0 5px #f81818;
+}
+.input-field .input-control.valid-password {
+  box-shadow: 0 0 5px #007bff;
+}
+.input-field .input-control.invalid-password {
+  box-shadow: 0 0 5px #f81818;
+}
+
+.input-field .input-control::placeholder {
+  transition: transform 1s;
+}
+.input-field .input-control:active::placeholder,
+.input-field .input-control:focus::placeholder,
+.input-field .input-control:valid::placeholder {
+  transform: translateX(5px);
+}
+/* .input-field .icon{
+  position: absolute;
+  top: 210px;
+  right: 220px;
+  width: 40px;
+  height: 40px; */
+/* display: grid; */
+/* place-content: center; */
+/* } */
+.fill-colour {
+  color: #b5b5bb;
+}
+.check-colour {
+  color: #1882f8;
+}
+.success-colour {
+  color: #00da1d;
+}
+.error-colour {
+  color: #f81818;
 }

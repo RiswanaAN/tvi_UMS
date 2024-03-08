@@ -24,7 +24,7 @@ export default function SupervisorDataTable() {
         },
       })
       .then((response) => {
-        setUserDetails(response.data.data);
+        setUserDetails(response.data.users);
       })
       .catch((error) => console.error("Error", error));
   }

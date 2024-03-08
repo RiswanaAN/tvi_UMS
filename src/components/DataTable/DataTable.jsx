@@ -11,6 +11,9 @@ import { FaTable } from "react-icons/fa";
 import { IoIosEye } from "react-icons/io";
 import "./DataTable.css";
 import ViewPage from "../../pages/ViewPage/ViewPage";
+import ConfirmationModal from "../NavBar/ConfirmationModal";
+import Searchbar from "../Searchbar";
+import UserSearch from "../UserSearch/userSearch";
 
 export default function DataTable() {
   const navigate = useNavigate();
@@ -24,7 +27,9 @@ export default function DataTable() {
   //view
   const [openDetails, setOpenDetails] = useState(false);
   const [viewId, setViewId] = useState();
-
+  //delete
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [deleteId, setDeleteId] = useState();
   function listUser() {
     axios
       .get("http://localhost:8000/api/users", {
@@ -34,8 +39,8 @@ export default function DataTable() {
         },
       })
       .then((response) => {
-        setUserDetails(response.data.data);
-        // console.log(response.data.data);
+        setUserDetails(response.data.users);
+        console.log(response.data);
       })
       .catch((error) => console.error("Error", error));
   }
@@ -53,28 +58,23 @@ export default function DataTable() {
   }
   //delete
   function handleRemove(id) {
-    axios
-      .delete(`http://localhost:8000/api/delete/${id}`, {
-        headers: {
-          Authorization: adminToken || tokenFromLS,
-          genericvalue: "admin",
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        listUser();
-      })
-      .catch((error) => console.log("Error: ", error));
+    setDeleteId(id);
+    setDeleteConfirmation(true);
   }
 
   const columns = [
-    { field: "id", headerName: "ID", width: 180, headerClassName: "header-cell", },
+    {
+      field: "id",
+      headerName: "ID",
+      width: 180,
+      headerClassName: "header-cell",
+    },
     {
       field: "firstName",
       headerName: "First Name",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
-      width: 200,
+      width: 170,
       headerClassName: "header-cell",
     },
     {
@@ -104,8 +104,11 @@ export default function DataTable() {
       headerName: "Edit",
       width: 120,
       renderCell: (params) => (
-        <button className="edit-button" onClick={() => handleEdit(params.row.id)}>
-          <FaEdit className="iconEdit"/>
+        <button
+          className="edit-button"
+          onClick={() => handleEdit(params.row.id)}
+        >
+          <FaEdit className="iconEdit" />
         </button>
       ),
       headerClassName: "header-cell",
@@ -115,8 +118,11 @@ export default function DataTable() {
       headerName: "Remove",
       width: 140,
       renderCell: (params) => (
-        <button className="delete-button" onClick={() => handleRemove(params.row.id)}>
-          <RiDeleteBin5Fill className="iconRemove"/>
+        <button
+          className="delete-button"
+          onClick={() => handleRemove(params.row.id)}
+        >
+          <RiDeleteBin5Fill className="iconRemove" />
         </button>
       ),
       headerClassName: "header-cell",
@@ -126,8 +132,11 @@ export default function DataTable() {
       headerName: "View",
       width: 140,
       renderCell: (params) => (
-        <button className="view-button" onClick={() => handleView(params.row.id)}>
-          <IoIosEye className="iconView"/> 
+        <button
+          className="view-button"
+          onClick={() => handleView(params.row.id)}
+        >
+          <IoIosEye className="iconView" />
         </button>
       ),
       headerClassName: "header-cell",
@@ -135,12 +144,17 @@ export default function DataTable() {
   ];
 
   return (
-    <div className="m-5 border border-[gray] rounded-md w-full">
-      <div className="flex items-center ml-3">
-        <FaTable />
-        <h1 className="flex justify-start items-center m-3 text-lg">
-          User Details
-        </h1>
+    <div className="m-5 border border-[gray] rounded-md w-80%">
+      <div className="flex flex-col items-start ml-3">
+        <div className="flex items-center">
+          <FaTable />
+          <h1 className="flex justify-start items-center m-3 text-lg">
+            User Details
+          </h1>
+        </div>
+        <div className="flex items-center">
+          <UserSearch />
+        </div>
       </div>
       <div className="table-container">
         {/* style={{
@@ -160,7 +174,7 @@ export default function DataTable() {
               paginationModel: { page: 0, pageSize: 5 },
             },
           }}
-          pageSizeOptions={[2, 5, 10]}
+          pageSizeOptions={[2, 5]}
         />
       </div>
       {open ? (
@@ -169,15 +183,30 @@ export default function DataTable() {
           setOpen={setOpen}
           editId={editId}
           userDetails={userDetails}
+          listUser={listUser}
         />
       ) : (
         ""
       )}
       {openDetails ? (
-        <ViewPage open={openDetails}
-        setOpen={setOpenDetails}
-        viewId={viewId}
-        userDetails={userDetails}/>
+        <ViewPage
+          open={openDetails}
+          setOpen={setOpenDetails}
+          viewId={viewId}
+          userDetails={userDetails}
+        />
+      ) : (
+        ""
+      )}
+      {deleteConfirmation ? (
+        <ConfirmationModal
+          open={deleteConfirmation}
+          setOpen={setDeleteConfirmation}
+          deleteId={deleteId}
+          userDetails={userDetails}
+          listUser={listUser}
+          message="delete"
+        />
       ) : (
         ""
       )}
