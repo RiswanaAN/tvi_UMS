@@ -30,6 +30,8 @@ export default function DataTable() {
   //delete
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [deleteId, setDeleteId] = useState();
+  //searchUser
+  const [searchWord, setSearchWord]= useState("")
   function listUser() {
     axios
       .get("http://localhost:8000/api/users", {
@@ -61,12 +63,23 @@ export default function DataTable() {
     setDeleteId(id);
     setDeleteConfirmation(true);
   }
+  //searchUser
+  function searchUser(){
+    console.log(searchWord)
+    axios.post("http://localhost:8000/api/user/"+searchWord,{
+      headers: {
+        Authorization: adminToken || tokenFromLS,
+        genericvalue: "admin",
+      },
+    }).then((response)=> console.log(searchWord))
+    .catch((error)=> console.log(error))
+  }
 
   const columns = [
     {
       field: "id",
       headerName: "ID",
-      width: 180,
+      width: 128,
       headerClassName: "header-cell",
     },
     {
@@ -116,7 +129,7 @@ export default function DataTable() {
     {
       field: "remove",
       headerName: "Remove",
-      width: 140,
+      width: 120,
       renderCell: (params) => (
         <button
           className="delete-button"
@@ -130,7 +143,7 @@ export default function DataTable() {
     {
       field: "view",
       headerName: "View",
-      width: 140,
+      width: 120,
       renderCell: (params) => (
         <button
           className="view-button"
@@ -144,7 +157,7 @@ export default function DataTable() {
   ];
 
   return (
-    <div className="m-5 border border-[gray] rounded-md w-80%">
+    <div className="m-5 border border-[gray] rounded-md">
       <div className="flex flex-col items-start ml-3">
         <div className="flex items-center">
           <FaTable />
@@ -153,7 +166,7 @@ export default function DataTable() {
           </h1>
         </div>
         <div className="flex items-center">
-          <UserSearch />
+          <UserSearch searchUser={searchUser} setSearchWord={setSearchWord}/>
         </div>
       </div>
       <div className="table-container">
