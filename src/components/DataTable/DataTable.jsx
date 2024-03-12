@@ -14,6 +14,7 @@ import ViewPage from "../../pages/ViewPage/ViewPage";
 import ConfirmationModal from "../NavBar/ConfirmationModal";
 import Searchbar from "../Searchbar";
 import UserSearch from "../UserSearch/userSearch";
+import NoResultModal from "../UserSearch/NoResultModal";
 
 export default function DataTable() {
   const navigate = useNavigate();
@@ -31,7 +32,8 @@ export default function DataTable() {
   const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const [deleteId, setDeleteId] = useState();
   //searchUser
-  const [searchWord, setSearchWord]= useState("")
+  const [searchWord, setSearchWord] = useState("");
+  const [noResult, setNoResult] = useState(false);
   function listUser() {
     axios
       .get("http://localhost:8000/api/users", {
@@ -64,15 +66,23 @@ export default function DataTable() {
     setDeleteConfirmation(true);
   }
   //searchUser
-  function searchUser(){
-    console.log(searchWord)
-    axios.post("http://localhost:8000/api/user/"+searchWord,{
-      headers: {
-        Authorization: adminToken || tokenFromLS,
-        genericvalue: "admin",
-      },
-    }).then((response)=> console.log(searchWord))
-    .catch((error)=> console.log(error))
+  function searchUser() {
+    // console.log(searchWord);
+    axios
+      .get("http://localhost:8000/api/users?search=" + searchWord, {
+        headers: {
+          Authorization: adminToken || tokenFromLS,
+          genericvalue: "admin",
+        },
+      })
+      .then((response) => {
+        if (response.data.users.length > 0) {
+          setUserDetails(response.data.users);
+        } else {
+          setNoResult(!noResult);
+        }
+      })
+      .catch((error) => console.log(error));
   }
 
   const columns = [
@@ -166,7 +176,11 @@ export default function DataTable() {
           </h1>
         </div>
         <div className="flex items-center">
-          <UserSearch searchUser={searchUser} setSearchWord={setSearchWord}/>
+          <UserSearch
+            searchUser={searchUser}
+            searchWord={searchWord}
+            setSearchWord={setSearchWord}
+          />
         </div>
       </div>
       <div className="table-container">
@@ -223,6 +237,7 @@ export default function DataTable() {
       ) : (
         ""
       )}
+      {noResult ? <NoResultModal open={noResult} setOpen={setNoResult} setSearchWord={setSearchWord} /> : ""}
     </div>
   );
 }
