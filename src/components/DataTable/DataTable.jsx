@@ -15,6 +15,7 @@ import ConfirmationModal from "../NavBar/ConfirmationModal";
 import Searchbar from "../Searchbar";
 import UserSearch from "../UserSearch/userSearch";
 import NoResultModal from "../UserSearch/NoResultModal";
+import Pagination from "../Pagination/Pagination";
 
 export default function DataTable() {
   const navigate = useNavigate();
@@ -196,12 +197,12 @@ export default function DataTable() {
           className="data-table"
           rows={userDetails}
           columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
-            },
-          }}
-          pageSizeOptions={[2, 5]}
+          // initialState={{
+          //   pagination: {
+          //     paginationModel: { page: 0, pageSize: 10 },
+          //   },
+          // }}
+          // pageSizeOptions={[2, 5]}
         />
       </div>
       {open ? (
@@ -238,6 +239,9 @@ export default function DataTable() {
         ""
       )}
       {noResult ? <NoResultModal open={noResult} setOpen={setNoResult} setSearchWord={setSearchWord} /> : ""}
+      <div>
+        <Pagination />
+      </div>
     </div>
   );
 }

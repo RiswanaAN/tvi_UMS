@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { FaUser } from "react-icons/fa6";
+import Profile from '../../assets/profile.png'
 
 const style = {
   position: "absolute",
@@ -60,7 +60,7 @@ export default function ViewPage(props) {
           <div className="flex justify-center border border-white">
             {/* <FaUser /> */}
             <img
-              src="https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png"
+              src={user.imageURL? user.imageURL: Profile}
               className="w-[80px]"
             ></img>
           </div>

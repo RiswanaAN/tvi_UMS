@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
 import Profile from "../../assets/profile.png";
+import ImageUpload from "../../components/ImageUpload/ImageUpload";
 
 function UserEditPage() {
   const [user, setUser] = useState({});
@@ -11,6 +12,8 @@ function UserEditPage() {
 
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
+  //image
+  const [imagePath, setImagePath]= useState("")
   const navigate = useNavigate();
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
@@ -31,11 +34,10 @@ function UserEditPage() {
   }, []);
 
   function editUser() {
-    console.log("Am entered");
     const userD = {
       firstName: firstName,
       lastName: lastName,
-      // imageURL: { Profile },
+      imageURL: imagePath,
     };
     axios
       .put("http://localhost:8000/api/me/update-user", userD, {
@@ -56,6 +58,10 @@ function UserEditPage() {
   function moveToBack() {
     navigate("/user/userHomepage");
   }
+  //uploadingImage
+  function UploadingImage(e){
+    setImagePath(e)
+  }
   return (
     <div className="md:h-[100vh] border flex flex-col items-center">
       <div className="w-full">
@@ -67,6 +73,13 @@ function UserEditPage() {
         </div>
         <form className="p-5 flex flex-col w-full">
           <div className="gap-3 mb-6 flex flex-col w-full pt-4">
+          <div className="w-full flex flex-col justify-center items-center pb-2 pl-2">
+              <img
+                src={imagePath? imagePath: Profile}
+                className="w-[100px] object-cover"
+              ></img>
+              <ImageUpload UploadingImage={UploadingImage}/>
+            </div>
             <div>
               <label
                 htmlFor="id"

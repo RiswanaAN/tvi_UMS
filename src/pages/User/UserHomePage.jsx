@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
+import Profile from "../../assets/profile.png"
 
 function UserHomePage() {
   const [user, setUser] = useState({});
@@ -41,7 +42,13 @@ function UserHomePage() {
           <h1 className="text-[30px]  text-gray-800">Profile</h1>
         </div>
         <form className="p-5 flex flex-col w-full">
-          <div className="gap-3 mb-6 flex flex-col w-full pt-4">
+          <div className="gap-3 mb-6 flex flex-col w-full">
+            <div className="w-full flex flex-col justify-center items-center pb-2 pl-2">
+              <img
+                src={user.imageURL? user.imageURL: Profile}
+                className="w-[100px]"
+              ></img>
+            </div>
             <div className="flex flex-col place-content-between gap-2 md:flex-row">
               <div className="w-full">
                 <label
