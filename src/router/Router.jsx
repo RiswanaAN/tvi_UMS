@@ -11,6 +11,8 @@ import UserRegister from "../pages/User/UserRegister";
 import UserHomePage from "../pages/User/UserHomePage";
 import SupervisorDashboard from "../pages/Supervisor/SupervisorDashboard";
 import UserEditPage from "../pages/User/UserEditPage";
+import { AreaChart } from "recharts";
+import ChartComponent from "../components/Chart/ChartComponent";
 
 const router= createBrowserRouter([
     {path: '/', element: <App />},
@@ -25,6 +27,7 @@ const router= createBrowserRouter([
     {path: '/user/userHomepage', element: <UserHomePage />},
     {path: '/user/userHomepage/userEdit', element: <UserEditPage />},
     {path: '/supervisorPage', element: <SupervisorDashboard />},
+    {path: '/homepage/areachart', element: <ChartComponent />}
 ]);
 
 export default router;

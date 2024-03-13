@@ -144,7 +144,7 @@ export default function UserRegister(props) {
                 className="text-white block bg-[#007bff] hover:bg-blue-600 mt-3 font-medium rounded-md text-sm sm:w-auto px-5 py-2.5 text-center"
                 onClick={registerUser}
               >
-                Login
+                Register
               </button>
             </form>
           </Typography>
