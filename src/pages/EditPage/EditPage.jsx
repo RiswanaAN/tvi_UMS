@@ -37,6 +37,11 @@ export default function EditPage(props) {
     props.userDetails.map((userD) => {
       if (userD.id == props.editId) {
         setUser(userD);
+        setFirstName(userD.firstName);
+        setLastName(userD.lastName);
+        setEmail(userD.email);
+        setRole(userD.role);
+        setPassword(userD.password);
         console.log(userD);
       }
     });
@@ -52,15 +57,15 @@ export default function EditPage(props) {
     setEditConfirmation(true);
   }
   function editUser(e) {
-    const user = {
+    const userDetails = {
       firstName: firstName,
       lastName: lastName,
       email: email,
-      password: password,
       role: role,
+      password: password,
     };
     axios
-      .put("http://localhost:8000/api/update/" + props.editId, user, {
+      .put("http://localhost:8000/api/update/" + props.editId, userDetails, {
         headers: {
           Authorization: adminToken || tokenFromLS,
           genericvalue: "admin",
@@ -77,6 +82,7 @@ export default function EditPage(props) {
         props.listUser();
         handleClose();
       });
+    console.log(user);
   }
 
   return (
@@ -139,7 +145,6 @@ export default function EditPage(props) {
                   id="email"
                   className="bg-gray-50  focus:outline-none border border-gray-300 text-gray-900 rounded-md block w-full p-3"
                   placeholder="Enter email address"
-                  required
                   defaultValue={user.email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -177,7 +182,6 @@ export default function EditPage(props) {
                   id="password"
                   className="bg-gray-50  focus:outline-none border border-gray-300 text-gray-900 rounded-md block w-full p-3 "
                   placeholder="Enter password"
-                  required
                   defaultValue={user.password}
                   onChange={(e) => setPassword(e.target.value)}
                 />

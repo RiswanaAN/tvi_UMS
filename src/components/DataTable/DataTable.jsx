@@ -12,14 +12,14 @@ import { IoIosEye } from "react-icons/io";
 import "./DataTable.css";
 import ViewPage from "../../pages/ViewPage/ViewPage";
 import ConfirmationModal from "../NavBar/ConfirmationModal";
-import Searchbar from "../Searchbar";
 import UserSearch from "../UserSearch/userSearch";
 import NoResultModal from "../UserSearch/NoResultModal";
 import Pagination from "../Pagination/Pagination";
 
 export default function DataTable() {
-  const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState([]);
+  //pagination
+  const [noOfUsers, setNoOfUsers] = useState();
   //token
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
@@ -35,9 +35,9 @@ export default function DataTable() {
   //searchUser
   const [searchWord, setSearchWord] = useState("");
   const [noResult, setNoResult] = useState(false);
-  function listUser() {
+  function listUser(no = 1) {
     axios
-      .get("http://localhost:8000/api/users", {
+      .get("http://localhost:8000/api/users?page=" + no, {
         headers: {
           Authorization: adminToken || tokenFromLS,
           genericvalue: "admin",
@@ -45,18 +45,26 @@ export default function DataTable() {
       })
       .then((response) => {
         setUserDetails(response.data.users);
+        setNoOfUsers(response.data.totalCount);
         console.log(response.data);
+        console.log(response.data.message);
       })
       .catch((error) => console.error("Error", error));
   }
   useEffect(() => {
     listUser();
   }, []);
+  //pagination
 
+  function currentPage(pageno) {
+    listUser(pageno);
+  }
+  //Edit
   function handleEdit(id) {
     setEditId(id);
     setOpen(true);
   }
+  //View
   function handleView(id) {
     setViewId(id);
     setOpenDetails(true);
@@ -108,8 +116,6 @@ export default function DataTable() {
       sortable: false,
       width: 150,
       headerClassName: "header-cell",
-      // valueGetter: (params) =>
-      //   `${params.row.firstName || ""} ${params.row.lastName || ""}`,
     },
     {
       field: "email",
@@ -185,24 +191,15 @@ export default function DataTable() {
         </div>
       </div>
       <div className="table-container">
-        {/* style={{
-          height: 400,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          width: "100%",
-          marginTop: 30,
-        }} */}
         <DataGrid
           className="data-table"
           rows={userDetails}
           columns={columns}
-          // initialState={{
-          //   pagination: {
-          //     paginationModel: { page: 0, pageSize: 10 },
-          //   },
-          // }}
-          // pageSizeOptions={[2, 5]}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
         />
       </div>
       {open ? (
@@ -238,9 +235,17 @@ export default function DataTable() {
       ) : (
         ""
       )}
-      {noResult ? <NoResultModal open={noResult} setOpen={setNoResult} setSearchWord={setSearchWord} /> : ""}
-      <div>
-        <Pagination />
+      {noResult ? (
+        <NoResultModal
+          open={noResult}
+          setOpen={setNoResult}
+          setSearchWord={setSearchWord}
+        />
+      ) : (
+        ""
+      )}
+      <div className="m-4">
+        <Pagination noOfUsers={noOfUsers} currentPage={currentPage} />
       </div>
     </div>
   );
