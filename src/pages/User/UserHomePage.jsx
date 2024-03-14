@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
 import Profile from "../../assets/profile.png"
+import { checkAuth } from "../../components/RouterProtector/checkAuth";
 
 function UserHomePage() {
   const [user, setUser] = useState({});
@@ -137,4 +138,4 @@ function UserHomePage() {
   );
 }
 
-export default UserHomePage;
+export default checkAuth(UserHomePage);

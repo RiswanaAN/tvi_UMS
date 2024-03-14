@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 import SupervisorNavbar from "./SupervisorNavbar";
 import SupervisorDataTable from "./SupervisorDataTable";
+import { checkAuth } from "../../components/RouterProtector/checkAuth";
 // import '../../components/SideBar/SideBar.css'
 
 function SupervisorDashboard() {
@@ -30,4 +31,4 @@ function SupervisorDashboard() {
   );
 }
 
-export default SupervisorDashboard;
+export default checkAuth(SupervisorDashboard);

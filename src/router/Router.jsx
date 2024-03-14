@@ -27,7 +27,7 @@ const router= createBrowserRouter([
     {path: '/user/userHomepage', element: <UserHomePage />},
     {path: '/user/userHomepage/userEdit', element: <UserEditPage />},
     {path: '/supervisorPage', element: <SupervisorDashboard />},
-    {path: '/homepage/areachart', element: <ChartComponent />}
+    
 ]);
 
 export default router;

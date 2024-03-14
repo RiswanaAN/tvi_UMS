@@ -6,6 +6,7 @@ import ChartComponent from "../../components/Chart/ChartComponent";
 import BarChart from "../../components/Chart/BarChart";
 import { FaChartArea } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
+import { checkAuth } from "../../components/RouterProtector/checkAuth";
 
 // import '../../components/SideBar/SideBar.css'
 
@@ -67,4 +68,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default checkAuth(HomePage);
