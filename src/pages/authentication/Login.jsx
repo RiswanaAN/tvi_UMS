@@ -73,7 +73,7 @@ function Login() {
 
   return (
     <div className="h-[100vh] bg-[#007bff] border flex flex-col items-center">
-      <div className="flex flex-col border pb-3 rounded-md bg-white m-[20px] mt-[50px] items-center md:w-[600px] w-[300px]">
+      <div className="flex flex-col border pb-3 rounded-md bg-wte m-[20px] mt-[50px] items-center md:w-[600px] w-[300px]">
         <div className="border-b border-gray-300 w-full flex flex-col items-center p-[20px]">
           <h1 className="text-[30px]">Login</h1>
         </div>
@@ -82,7 +82,7 @@ function Login() {
             <div>
               <label
                 htmlFor="email"
-                className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-1 text-sm font-medium text-gray-900 dark:text-wte"
               >
                 Email
               </label>
@@ -124,7 +124,7 @@ function Login() {
             <div>
               <label
                 htmlFor="password"
-                className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+                className="block mb-1 text-sm font-medium text-gray-900 dark:text-wte"
               >
                 Password
               </label>
@@ -175,7 +175,7 @@ function Login() {
             </Link>
             <button
               type="submit"
-              className="text-white block bg-[#007bff] hover:bg-blue-600  font-medium rounded-md text-sm sm:w-auto px-5 py-2.5 text-center"
+              className="text-wte block bg-[#007bff] hover:bg-blue-600  font-medium rounded-md text-sm sm:w-auto px-5 py-2.5 text-center"
               onClick={loginUser}
             >
               Login

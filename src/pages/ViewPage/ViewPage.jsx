@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { useEffect } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Profile from '../../assets/profile.png'
+import { TfiEmail } from "react-icons/tfi";
+import { FaUserCog } from "react-icons/fa";
+import { TbPasswordUser } from "react-icons/tb";
 
 const style = {
   position: "absolute",
@@ -15,11 +15,10 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 400,
-  height: 530,
   bgcolor: "background.paper",
-  border: "1px solid gray",
   boxShadow: 24,
-  p: 4,
+  borderRadius: "20px",
+  padding: "24px"
 };
 
 export default function ViewPage(props) {
@@ -28,156 +27,103 @@ export default function ViewPage(props) {
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
   const [user, setUser] = useState({});
+  const [icon, setIcon] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [profilePic, setProfilePic]= useState("");
+
+
   useEffect(() => {
-    props.userDetails.map((userD) => {
-      if (userD.id == props.viewId) {
+    props.userDetails.forEach((userD) => {
+      if (userD._id === props.viewId) {
         setUser(userD);
-        console.log(userD);
+        const full = `${userD.firstName} ${userD.lastName}`;
+        const userIcon = `${userD.firstName.charAt(0)}${userD.lastName.charAt(0)}`;
+        setIcon(userIcon);
+        setFullname(full);
       }
     });
-    axios.get("http://localhost:8000/api/user/" + props.viewId, {
+
+    axios.get(`http://localhost:8000/api/user/${props.viewId}`, {
       headers: {
         Authorization: adminToken || tokenFromLS,
-        genericvalue: "admin",
-      },
+        genericvalue: "admin"
+      }
+    }).then((response)=> {
+      console.log(response.data.result)
+      const image= response.data.result.image?.data
+      // console.log(image);
+      const base64String = btoa(
+        String.fromCharCode(...new Uint8Array(image))
+        );
+        
+        setProfilePic(base64String);
+    
     });
   }, []);
+
   function handleUser() {
     navigate("/login/homePage");
   }
+
   return (
-    <div>
-      <Modal
-        open={props.open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2" className="flex justify-center items-center pb-4">
-           {` ${user.firstName} ${user.lastName}`} 
-          </Typography>
-          <div className="flex justify-center border border-white">
-            {/* <FaUser /> */}
-            <img
-              src={user.imageURL? user.imageURL: Profile}
-              className="w-[80px]"
-            ></img>
-          </div>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <form className="flex flex-col justify-center">
-              <div>
-                <label
-                  htmlFor="id"
-                  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Id :
-                </label>
-                <input
-                  type="text"
-                  id="id"
-                  className=" bg-gray-50  focus:outline-none border border-white  text-[#212529] block p-1 "
-                  readOnly
-                  required
-                  defaultValue={props.viewId}
-                />
-              </div>
-              <div className="flex">
-                <div className="">
-                  <label
-                    htmlFor="fname"
-                    className="block mb-1 text-sm font-medium text-gray-900"
-                  >
-                    First name :
-                  </label>
-                  <input
-                    type="text"
-                    id="fname"
-                    readOnly
-                    className=" bg-gray-50  focus:outline-none border border-white  text-[#212529] p-1 "
-                    defaultValue={user.firstName}
-                  />
-                </div>
-                <div className="">
-                  <label
-                    htmlFor="lname"
-                    className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Last name :
-                  </label>
-                  <input
-                    type="text"
-                    id="lname"
-                    readOnly
-                    className=" bg-gray-50  focus:outline-none border border-white  text-[#212529]  p-1  w-[80px]"
-                    defaultValue={user.lastName}
-                  />
-                </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  email :
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className=" bg-gray-50  focus:outline-none border border-white  text-[#212529] block p-1 "
-                  readOnly
-                  required
-                  defaultValue={user.email}
-                />
-              </div>
-              <div className="w-full">
-                <label
-                  htmlFor="role"
-                  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Role :
-                </label>
-
-                <input
-                  type="text"
-                  id="role"
-                  className=" bg-gray-50  focus:outline-none border border-white  text-[#212529] block p-1 "
-                  readOnly
-                  required
-                  defaultValue={user.role}
-                />
-              </div>
-
-              <div className="w-full">
-                <label
-                  htmlFor="password"
-                  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Password :
-                </label>
-                <input
-                  type="text"
-                  id="password"
-                  className=" bg-gray-50  focus:outline-none border border-white  text-[#212529] block p-1 "
-                  readOnly
-                  required
-                  defaultValue={user.password}
-                />
-              </div>
-              <div className="w-full">
-                <button
-                  type="submit"
-                  className="text-white bg-[#007bff] hover:bg-blue-600 block font-medium rounded-md text-sm mt-3  mb-3 px-5 py-2.5 text-center"
-                  onClick={handleUser}
-                >
-                  Back
-                </button>
-              </div>
-            </form>
-          </Typography>
-        </Box>
-      </Modal>
-    </div>
+    <Modal
+      open={props.open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <Typography variant="h6" align="center" gutterBottom>
+          {fullname}
+        </Typography>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
+          {user.image ? (
+            <img src={`data:image/png;base64,${profilePic}`} alt="User" style={{ width: "100px", height: "100px", borderRadius: "50%" }} />
+          ) : (
+            <div className="w-[80px] h-[80px] rounded-[50%] bg-[#124338] flex justify-center items-center text-[2rem] text-wte">
+              {icon}
+            </div>
+          )}
+        </div>
+        <div>
+          <form>
+            <div className="flex items-center mb-2">
+              <TfiEmail className="mr-[8px]" />
+              <input
+                type="email"
+                className="input-field"
+                disabled
+                defaultValue={user.email}
+              />
+            </div>
+            <div className="flex items-center mb-2">
+              <FaUserCog className="mr-[8px]" />
+              <input
+                type="text"
+                className="input-field"
+                disabled
+                defaultValue={user.role}
+              />
+            </div>
+            <div className="flex items-center">
+              <TbPasswordUser className="mr-[8px]" />
+              <input
+                type="text"
+                className="input-field"
+                disabled
+                defaultValue={user.password}
+              />
+            </div>
+            {/* <button
+          className="button"
+          onClick={handleUser}
+        >
+          Back
+        </button> */}
+          </form>
+        </div>
+       
+      </Box>
+    </Modal>
   );
 }
-// https://www.pngall.com/wp-content/uploads/5/Profile-Male-PNG.png

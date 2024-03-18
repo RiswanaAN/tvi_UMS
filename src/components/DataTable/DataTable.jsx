@@ -76,7 +76,6 @@ export default function DataTable() {
   }
   //searchUser
   function searchUser() {
-    // console.log(searchWord);
     axios
       .get("http://localhost:8000/api/users?search=" + searchWord, {
         headers: {
@@ -96,9 +95,9 @@ export default function DataTable() {
 
   const columns = [
     {
-      field: "id",
+      field: "_id",
       headerName: "ID",
-      width: 128,
+      width: 140,
       headerClassName: "header-cell",
     },
     {
@@ -136,7 +135,7 @@ export default function DataTable() {
       renderCell: (params) => (
         <button
           className="edit-button"
-          onClick={() => handleEdit(params.row.id)}
+          onClick={() => handleEdit(params.row._id)}
         >
           <FaEdit className="iconEdit" />
         </button>
@@ -150,7 +149,7 @@ export default function DataTable() {
       renderCell: (params) => (
         <button
           className="delete-button"
-          onClick={() => handleRemove(params.row.id)}
+          onClick={() => handleRemove(params.row._id)}
         >
           <RiDeleteBin5Fill className="iconRemove" />
         </button>
@@ -164,7 +163,7 @@ export default function DataTable() {
       renderCell: (params) => (
         <button
           className="view-button"
-          onClick={() => handleView(params.row.id)}
+          onClick={() => handleView(params.row._id)}
         >
           <IoIosEye className="iconView" />
         </button>
@@ -172,7 +171,7 @@ export default function DataTable() {
       headerClassName: "header-cell",
     },
   ];
-
+ 
   return (
     <div className="m-5 border border-[gray] rounded-md">
       <div className="flex flex-col items-start ml-3">
@@ -193,11 +192,13 @@ export default function DataTable() {
       <div className="table-container">
         <DataGrid
           className="data-table"
+         
           rows={userDetails}
           columns={columns}
+          getRowId={(row) => row._id} 
           initialState={{
             pagination: {
-              paginationModel: { page: 0, pageSize: 5 },
+              paginationModel: { page: 0, pageSize: 10 },
             },
           }}
         />

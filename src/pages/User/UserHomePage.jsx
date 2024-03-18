@@ -3,11 +3,12 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import UserNavbar from "./UserNavbar";
-import Profile from "../../assets/profile.png"
+import Profile from "../../assets/profile.png";
 import { checkAuth } from "../../components/RouterProtector/checkAuth";
 
 function UserHomePage() {
   const [user, setUser] = useState({});
+  const [icon, setIcon] = useState("");
   const navigate = useNavigate();
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
@@ -23,6 +24,13 @@ function UserHomePage() {
       .then((response) => {
         console.log(response.data.data);
         setUser(response.data.data);
+        // console.log(response.data.data.firstName);
+        const fName = response.data.data.firstName;
+        const lName = response.data.data.lastName;
+        // console.log(fName, lName);
+        const userIcon = fName.charAt(0) + lName.charAt(0);
+        setIcon(userIcon);
+        console.log(icon);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -33,6 +41,7 @@ function UserHomePage() {
   function editUser() {
     navigate("/user/userHomepage/userEdit");
   }
+
   return (
     <div className="md:h-[100vh] border flex flex-col items-center">
       <div className="w-full">
@@ -45,10 +54,11 @@ function UserHomePage() {
         <form className="p-5 flex flex-col w-full">
           <div className="gap-3 mb-6 flex flex-col w-full">
             <div className="w-full flex flex-col justify-center items-center pb-2 pl-2">
-              <img
-                src={user.imageURL? user.imageURL: Profile}
-                className="w-[100px]"
-              ></img>
+              {user.imageURL ? (
+                <img src={user.imageURL} className="w-[100px]"></img>
+              ) : (
+                <div className="border border-black text-white bg-[#124338] p-4 rounded-[55%] text-[25px]">{icon}</div>
+              )}
             </div>
             <div className="flex flex-col place-content-between gap-2 md:flex-row">
               <div className="w-full">

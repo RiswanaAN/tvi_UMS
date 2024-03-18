@@ -6,9 +6,6 @@ import ChartComponent from "../../components/Chart/ChartComponent";
 import BarChart from "../../components/Chart/BarChart";
 import { FaChartArea } from "react-icons/fa";
 import { FaChartBar } from "react-icons/fa";
-import { checkAuth } from "../../components/RouterProtector/checkAuth";
-
-// import '../../components/SideBar/SideBar.css'
 
 function HomePage() {
   const [isClicked, setIsClicked] = useState(false);
@@ -21,7 +18,6 @@ function HomePage() {
         <NavBar clickMenuButton={clickMenuButton} />
       </div>
       <div className="flex">
-        {/* {isClicked ? <SideBar /> : <></>} */}
         <div
           className={`transition-all duration-500 ${
             isClicked ? "w-[250px]" : "w-0"
@@ -68,4 +64,4 @@ function HomePage() {
   );
 }
 
-export default checkAuth(HomePage);
+export default (HomePage);

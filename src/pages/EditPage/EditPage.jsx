@@ -35,7 +35,9 @@ export default function EditPage(props) {
   const [editConfirmation, setEditConfirmation] = useState(false);
   useEffect(() => {
     props.userDetails.map((userD) => {
-      if (userD.id == props.editId) {
+      if (userD._id == props.editId) {
+        // console.log("hhhh")
+        // console.log(props.editId)
         setUser(userD);
         setFirstName(userD.firstName);
         setLastName(userD.lastName);
@@ -119,7 +121,7 @@ export default function EditPage(props) {
                 <div className="w-full">
                   <label
                     htmlFor="lname"
-                    className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-1 text-sm font-medium text-gray-900 dark:text-wte"
                   >
                     Last name
                   </label>
@@ -136,7 +138,7 @@ export default function EditPage(props) {
               <div>
                 <label
                   htmlFor="email"
-                  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-1 text-sm font-medium text-gray-900 dark:text-wte"
                 >
                   email
                 </label>
@@ -152,7 +154,7 @@ export default function EditPage(props) {
               <div className="w-full">
                 <label
                   htmlFor="role"
-                  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-1 text-sm font-medium text-gray-900 dark:text-wte"
                 >
                   Select the Role:
                 </label>
@@ -173,7 +175,7 @@ export default function EditPage(props) {
               <div className="w-full">
                 <label
                   htmlFor="password"
-                  className="block mb-1 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-1 text-sm font-medium text-gray-900 dark:text-wte"
                 >
                   Password
                 </label>
@@ -191,7 +193,7 @@ export default function EditPage(props) {
           <div className="w-full">
             <button
               type="submit"
-              className="text-white bg-[#007bff] hover:bg-blue-600 block font-medium rounded-md text-sm mt-3  px-5 py-2.5 text-center"
+              className="text-wte bg-[#007bff] hover:bg-blue-600 block font-medium rounded-md text-sm mt-3  px-5 py-2.5 text-center"
               onClick={editConfirm}
             >
               Edit
