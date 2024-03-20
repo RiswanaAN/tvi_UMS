@@ -22,11 +22,11 @@ function UserHomePage() {
         },
       })
       .then((response) => {
-        console.log(response.data.data);
-        setUser(response.data.data);
+        console.log(response.data.result);
+        setUser(response.data.result);
         // console.log(response.data.data.firstName);
-        const fName = response.data.data.firstName;
-        const lName = response.data.data.lastName;
+        const fName = response.data.result.firstName;
+        const lName = response.data.result.lastName;
         // console.log(fName, lName);
         const userIcon = fName.charAt(0) + lName.charAt(0);
         setIcon(userIcon);
@@ -55,7 +55,7 @@ function UserHomePage() {
           <div className="gap-3 mb-6 flex flex-col w-full">
             <div className="w-full flex flex-col justify-center items-center pb-2 pl-2">
               {user.imageURL ? (
-                <img src={user.imageURL} className="w-[100px]"></img>
+                <img src={user.imageURL} className="w-[100px] h-[100px]"></img>
               ) : (
                 <div className="border border-black text-white bg-[#124338] p-4 rounded-[55%] text-[25px]">{icon}</div>
               )}
@@ -148,4 +148,4 @@ function UserHomePage() {
   );
 }
 
-export default checkAuth(UserHomePage);
+export default (UserHomePage);

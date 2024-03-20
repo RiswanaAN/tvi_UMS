@@ -51,7 +51,7 @@ export default function ViewPage(props) {
     }).then((response)=> {
       console.log(response.data.result)
       const image= response.data.result.image?.data
-      // console.log(image);
+      console.log(image);
       const base64String = btoa(
         String.fromCharCode(...new Uint8Array(image))
         );
@@ -80,7 +80,7 @@ export default function ViewPage(props) {
           {user.image ? (
             <img src={`data:image/png;base64,${profilePic}`} alt="User" style={{ width: "100px", height: "100px", borderRadius: "50%" }} />
           ) : (
-            <div className="w-[80px] h-[80px] rounded-[50%] bg-[#124338] flex justify-center items-center text-[2rem] text-wte">
+            <div className="w-[80px] h-[80px] rounded-[50%] bg-[#124338] flex justify-center items-center text-[2rem] text-white">
               {icon}
             </div>
           )}

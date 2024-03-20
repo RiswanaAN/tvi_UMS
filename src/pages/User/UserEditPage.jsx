@@ -27,8 +27,8 @@ function UserEditPage() {
         },
       })
       .then((response) => {
-        console.log(response.data.data);
-        setUser(response.data.data);
+        console.log(response.data.result);
+        setUser(response.data.result);
       })
       .catch((error) => console.log(error));
   }, []);
@@ -93,7 +93,7 @@ function UserEditPage() {
                 className="bg-gray-50 opacity-75 focus:outline-none border border-b-gray-300 text-gray-900 rounded-md block w-full p-3"
                 disabled
                 required
-                defaultValue={user.id}
+                defaultValue={user._id}
                 // onChange={(e) => setId(e.target.value)}
               />
             </div>

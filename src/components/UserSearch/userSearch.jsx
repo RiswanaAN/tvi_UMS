@@ -13,7 +13,7 @@ function UserSearch(props) {
         onChange={(e)=> props.setSearchWord(e.target.value)}
       ></input>
       
-        <button type="button" onClick={props.searchUser} className=" text-wte flex justify-center items-center pr-2 pl-2 rounded-r-md mb-2 bg-gray-700 hover:bg-gray-600">
+        <button type="button" onClick={props.searchUser} className=" text-white flex justify-center items-center pr-2 pl-2 rounded-r-md mb-2 bg-gray-700 hover:bg-gray-600">
           <BsSearch />
         </button>
       

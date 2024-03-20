@@ -11,6 +11,8 @@ import UserRegister from "../pages/User/UserRegister";
 import UserHomePage from "../pages/User/UserHomePage";
 import SupervisorDashboard from "../pages/Supervisor/SupervisorDashboard";
 import UserEditPage from "../pages/User/UserEditPage";
+import AdminProductHomePage from "../Products/AdminProducts/AdminProductHomePage";
+import AdminAddProduct from "../Products/AdminProducts/AdminAddProduct";
 
 const router= createBrowserRouter([
     {path: '/', element: <App />},
@@ -24,7 +26,9 @@ const router= createBrowserRouter([
     {path: '/userRegistration', element: <UserRegister />},
     {path: '/user/userHomepage', element: <UserHomePage />},
     {path: '/user/userHomepage/userEdit', element: <UserEditPage />},
-    {path: '/supervisorPage', element: <SupervisorDashboard />} 
+    {path: '/supervisorPage', element: <SupervisorDashboard />} ,
+    {path: '/admin/product', element: <AdminProductHomePage />} ,
+    {path: '/admin/product/add', element: <AdminAddProduct />} ,
 ]);
 
 export default router;

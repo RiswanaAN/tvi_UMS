@@ -246,7 +246,7 @@ export default function DataTable() {
         ""
       )}
       <div className="m-4">
-        <Pagination noOfUsers={noOfUsers} currentPage={currentPage} />
+        <Pagination totalNumber={noOfUsers} currentPage={currentPage} />
       </div>
     </div>
   );

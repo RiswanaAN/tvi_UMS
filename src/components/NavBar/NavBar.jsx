@@ -17,8 +17,8 @@ function NavBar(props) {
     <div className="flex place-content-between items-center bg-[#343a40] p-3 ">
       <div className="text-white flex gap-3 place-content-between items-center">
         <h1>User Management System</h1>
-        <button onClick= {props.clickMenuButton} className="border border-[#343a40] focus:outline-none focus:ring-5 focus:border-[#007bff]">
-          <IoMenuSharp size="20px" color="gray" className="sideBarButton focus:outline-none focus:ring-5 focus:border-[#007bff]"/>
+        <button onClick= {props.clickMenuButton} className="border border-[#343a40] focus:outline-none focus:ring-5 focus:border-[#007bff] hover:text-white">
+          <IoMenuSharp size="20px" color="gray" className="sideBarButton focus:outline-none focus:ring-5 focus:border-[#007bff] hover:text-white"/>
         </button>
         
       </div>
@@ -26,7 +26,7 @@ function NavBar(props) {
         <Searchbar />
           
          <div className="dropdown" style={{ position: 'relative' }}>
-          <button onClick={showDropDown} className="dropbtn flex justify-center items-center text-[gray] focus:text-[white]">
+          <button onClick={showDropDown} className="dropbtn hover:text-white flex justify-center items-center text-[gray] focus:text-[white]">
           <FaUser size="18px" />
           <IoMdArrowDropdown />
         </button>

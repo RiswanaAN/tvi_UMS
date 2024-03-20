@@ -3,7 +3,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 
 export default function PaginationTable(props) {
-  const noOfPages = Math.ceil(props.noOfUsers / 10);
+  const noOfPages = Math.ceil(props.totalNumber / 10);
 
   const handlePageChange = (e) => {
     props.currentPage(e.target.textContent);
