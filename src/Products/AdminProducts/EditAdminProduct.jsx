@@ -1,13 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import ProductImage from "../../assets/imageProduct.png";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { LiaEditSolid } from "react-icons/lia";
 
 const style = {
   position: "absolute",
@@ -22,7 +21,7 @@ const style = {
 };
 
 export default function EditAdminProduct(props) {
-    const [editProduct, setEditProduct]= useState()
+  const [editProduct, setEditProduct] = useState({});
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productDetails, setProductDetails] = useState("");
@@ -33,42 +32,49 @@ export default function EditAdminProduct(props) {
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
   const handleClose = () => props.setOpen(false);
 
-  useEffect(()=> {
-    props.products.find((product)=>{
-        if(product._id== props.editPid){
-            // console.log(props.editPid);
-            setEditProduct(product);
-            setProductName(product.productName)
-            setProductPrice(product.productPrice)
-            setProductDetails(product.productDetails)
-            setCategory(product.category)
-            setQuantity(product.quantity)
-        }
-    })
-  })
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/get-one/" + props.editPid, {
+        headers: {
+          Authorization: adminToken || tokenFromLS,
+          genericvalue: "admin",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        setProductName(response.data.result.productName);
+        setProductPrice(response.data.result.productPrice);
+        setProductDetails(response.data.result.productDetails);
+        setCategory(response.data.result.category);
+        setQuantity(response.data.result.quantity);
+      });
+  }, []);
 
-//   function addNewProduct(e) {
-//     e.preventDefault();
-//     const product = {
-//       productName: productName,
-//       productPrice: productPrice,
-//       productDetails: productDetails,
-//       category: category,
-//       quantity: quantity,
-//     };
-//     axios
-//       .post("http://localhost:8000/api/addProdt", product, {
-//         headers: {
-//           Authorization: adminToken || tokenFromLS,
-//           genericvalue: "admin",
-//         },
-//       })
-//       .then((response) => {
-//         console.log(response);
-//         props.setOpen(false)
-//         // navigate("/admin/product");
-//       });
-//   }
+  function editProductDetails(e) {
+    e.preventDefault()
+    const updatedDetails = {
+      productName: productName,
+      productPrice: productPrice,
+      productDetails: productDetails,
+      category: category,
+      quantity: quantity,
+    };
+    axios
+      .put(
+        "http://localhost:8000/api/updateProdt/" + props.editPid,
+        updatedDetails,
+        {
+          headers: {
+            Authorization: adminToken || tokenFromLS,
+            genericvalue: "admin",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        props.setOpen(false);
+      });
+  }
 
   return (
     <div>
@@ -85,7 +91,7 @@ export default function EditAdminProduct(props) {
             component="h1"
             className="flex justify-center "
           >
-            Add New Product
+            Update Current Product
           </Typography>
           <Typography
             id="modal-modal-description"
@@ -181,8 +187,12 @@ export default function EditAdminProduct(props) {
               </div>
               <div className="flex flex-wrap p-3 gap-5 justify-center">
                 <div className="flex flex-col">
-                  <button className="btn font-bold" >
-                    Add Product
+                  <button
+                    className="btn font-bold flex justify-center gap-1 pl-3 pr-3"
+                    onClick={editProductDetails}
+                  >
+                    <LiaEditSolid className="text-xl"/>
+                    Edit
                   </button>
                 </div>
               </div>
