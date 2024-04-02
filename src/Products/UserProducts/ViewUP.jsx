@@ -6,8 +6,9 @@ import ProductImage from "../../assets/imageProduct.png";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { FaIndianRupeeSign } from "react-icons/fa6";
-import { RiEdit2Fill } from "react-icons/ri";
-import { MdDeleteForever } from "react-icons/md";
+import { GiElectric } from "react-icons/gi";
+import { BiCartDownload } from "react-icons/bi";
+import { AiOutlineDelete } from "react-icons/ai";
 
 const style = {
   position: "absolute",
@@ -15,7 +16,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 700,
-  height: 450,
+  height: 500,
   bgcolor: "background.paper",
   border: "2px solid white",
   boxShadow: 24,
@@ -24,20 +25,18 @@ const style = {
 
 export default function viewUP(props) {
   const [singleProduct, setSingleProduct] = React.useState({});
-  //editProduct
-  const [editProductOpen, setEditProductOpen] = React.useState(false);
   const [noOfStock, setNoOfStock] = React.useState("");
-  const [editPid, setEditPid] = React.useState("");
-  function editProduct(id) {
-    setEditPid(id);
-    setEditProductOpen(true);
-  }
-
+  const [noOfItem, setNoOfItem] = React.useState(0);
+  
   //token from store
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
 
   React.useEffect(() => {
+    console.log("cart Products:"+props.products);
+    listcartItems();
+  }, []);
+  function listcartItems() {
     axios
       .get("http://localhost:8000/api/get-one/" + props.viewId, {
         headers: {
@@ -48,24 +47,59 @@ export default function viewUP(props) {
       .then((response) => {
         setSingleProduct(response.data.result);
         console.log(response.data.result);
-        setNoOfStock(response.data.result.quantity);
+        setNoOfStock(response.data.result.stock);
       });
-  }, []);
+  }
   const handleClose = () => props.setOpen(false);
 
-  function deleteProduct(id) {
+  //addToCart
+  function addToCart(id) {
+    setNoOfItem(noOfItem + 1);
+    // console.log(noOfItem);
     axios
-      .delete("http://localhost:8000/api/deleteProduct/" + id, {
+      .post(
+        "http://localhost:8000/api/add-to-cart/" + id,
+        {},
+        {
+          headers: {
+            Authorization: adminToken || tokenFromLS,
+            genericvalue: "agent",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        handleClose();
+      });
+  }
+  //remove Cart Item
+  function removeCartItem(id) {
+    axios
+      .delete("http://localhost:8000/api/delete-cart/" + id, {
         headers: {
           Authorization: adminToken || tokenFromLS,
-          genericvalue: "admin",
+          genericvalue: "agent",
         },
       })
       .then((response) => {
         console.log(response);
-        props.setOpen(false);
+        handleClose();
         props.listProduct();
       });
+  }
+  //remove from wishlist
+  function removeFromWishList(id){
+    axios.delete("http://localhost:8000/api/delete-wishist/"+id,{
+      headers:{
+        Authorization: tokenFromLS|| adminToken,
+        genericvalue: "agent"
+      }
+    }).then((response)=>{
+      
+      console.log(response);
+      handleClose();
+      props.listProduct();
+    })
   }
   return (
     <div>
@@ -86,20 +120,36 @@ export default function viewUP(props) {
             sx={{ mt: 2 }}
             className="flex justify-center"
           >
-            <div className="flex gap-[50px]">
+            <div className="flex gap-[4px]">
               <div>
                 <img src={ProductImage} className="h-[300px] w-[250px]"></img>
               </div>
-              <div className="flex flex-col w-[500px]  pr-[55px] items-center">
+              <div className="flex flex-col ml-[30px] w-[500px]  pr-[55px] items-center">
                 {/* {console.log(singleProduct)} */}
-                <h1 className="text-[25px] ">{singleProduct.productName}</h1>
-                <div className="flex items-center justify-center text-[25px]">
-                  <FaIndianRupeeSign />
+                <h1 className="text-[25px] ">{singleProduct.title}</h1>
+                <div className="flex items-center justify-center">
+                  <FaIndianRupeeSign className="text-[18px] text-gray-800" />
 
-                  <p className="font-serif text-[30px]">
-                    {singleProduct.productPrice}
+                  <p className="font-serif text-[25px]">
+                    {singleProduct.discountedPrice}
                   </p>
                   <p className="italic text-sm pl-1"> /each</p>
+                </div>
+                <div>
+                  <div>
+                    <div className="flex italic font-serif text-[15px] gap-1">
+                    <p >
+                      M.R.P: 
+                    </p>
+                    <p className="line-through flex items-center text-gray-800">
+                    <FaIndianRupeeSign />
+                    {singleProduct.price}
+                    </p>
+                    </div>
+                    <p className="font-serif text-[15px] text-green-800">
+                      ({singleProduct.offer}% off)
+                    </p>
+                  </div>
                 </div>
                 {noOfStock == 0 ? (
                   <p className="pt-4 text-red-700 italic">Out of Stock!!!</p>
@@ -110,26 +160,52 @@ export default function viewUP(props) {
                 ) : (
                   ""
                 )}
+               
                 <p className="pt-4 text-gray-700">
                   Category: {singleProduct.category}
                 </p>
                 <div>
-                  <div className="italic text-sm text-gray-700 p-5 text-justify h-[150px] w-full overflow-auto flex justify-center">
-                    Description: {singleProduct.productDetails}
+                  <div className="italic text-sm text-gray-700 p-5 text-justify  w-full overflow-auto flex justify-center">
+                    Description: {singleProduct.description}
                   </div>
                 </div>
-                <div className="flex gap-[200px] mt-3 mb-3">
-                  <button
-                    className="text-[40px] btn"
-                    onClick={() => editProduct(singleProduct._id)}
-                  >
-                    <RiEdit2Fill />
-                  </button>
-                  <button
-                    className="text-[40px] btn"
-                    onClick={() => deleteProduct(singleProduct._id)}
-                  >
-                    <MdDeleteForever />
+                <div className="flex gap-[40px] mb-3">
+                  {props.currentPage == "store" ? (
+                    <button
+                      className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-[#ff9f00] rounded-md"
+                      onClick={() => addToCart(singleProduct._id)}
+                    >
+                      <BiCartDownload className="text-2xl" />
+                      Add to Cart
+                    </button>
+                  ):props.currentPage == "wishlist" ? (
+                    <button
+                    className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-red-700 rounded-md"                      
+                    onClick={() => removeFromWishList(singleProduct._id)}
+                    >
+                      <BiCartDownload className="text-2xl" />
+                      Remove From Wishlist
+                    </button>
+                  ) : props.currentPage == "cart" ? (
+                    <button
+                      className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-red-700 rounded-md"
+                      onClick={() => removeCartItem(singleProduct._id)}
+                    >
+                      <AiOutlineDelete className="text-2xl" />
+                      Remove
+                    </button>
+                  ):(
+                    <button
+                      className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-[#ff9f00] rounded-md"
+                      onClick={() => addToCart(singleProduct._id)}
+                    >
+                      <BiCartDownload className="text-2xl" />
+                      Add to Cart
+                    </button>
+                  )}
+                  <button className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-[#fb641b] rounded-md">
+                    <GiElectric className="text-2xl" />
+                    Buy Now
                   </button>
                 </div>
               </div>

@@ -18,6 +18,7 @@ function Logout() {
         padding: "10px",
         width: "150px",
         marginTop: "10px",
+        borderRadius: "10px"
       }}
     >
       <ConfirmationModal

@@ -5,6 +5,7 @@ import { IoIosHeartEmpty } from "react-icons/io";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { MdOutlineStore } from "react-icons/md";
 import "../../components/SideBar/SideBar.css";
+import CartBadge from "../../components/Badge/CartBadge";
 
 function UserSideBar(props) {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ function UserSideBar(props) {
           <div className="text-[#FFFFFF80]  flex justify-center items-center gap-2">
            
            <MdOutlineStore className="text-[#FFFFFF40]" />
-
+          
 
             <button
               onClick={(e)=>props.dashboardMenu("store")}
@@ -56,8 +57,7 @@ function UserSideBar(props) {
             </button>
           </div>
           <div className="text-[#FFFFFF80]  flex justify-center items-center gap-2">
-           <HiOutlineShoppingCart className="text-[#FFFFFF40]" />
-
+           <HiOutlineShoppingCart className="text-[#FFFFFF40]" />  
             <button
               onClick={(e)=>props.dashboardMenu("cart")}
               className="text-[#FFFFFF80]  hover:text-white focus:text-[white] italic text-[20px]"

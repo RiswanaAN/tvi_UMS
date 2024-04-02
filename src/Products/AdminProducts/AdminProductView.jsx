@@ -6,7 +6,7 @@ import Modal from "@mui/material/Modal";
 import ProductImage from "../../assets/imageProduct.png";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { FaIndianRupeeSign } from "react-icons/fa6";
+import { LiaRupeeSignSolid } from "react-icons/lia";
 import { RiEdit2Fill } from "react-icons/ri";
 import { MdDeleteForever } from "react-icons/md";
 import EditAdminProduct from "./EditAdminProduct";
@@ -17,7 +17,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 700,
-  height: 450,
+  // height: 450,
   bgcolor: "background.paper",
   border: "2px solid white",
   boxShadow: 24,
@@ -29,8 +29,9 @@ export default function AdminProductView(props) {
   //editProduct
   const [editProductOpen, setEditProductOpen] = React.useState(false);
   const [editPid, setEditPid] = React.useState("");
+  const [productImage, setProductImage] = React.useState("");
   function editProduct(id) {
-    setEditPid(id)
+    setEditPid(id);
     setEditProductOpen(true);
   }
 
@@ -46,7 +47,16 @@ export default function AdminProductView(props) {
           genericvalue: "admin",
         },
       })
-      .then((response) => setSingleProduct(response.data.result));
+      .then((response) => {
+        setSingleProduct(response.data.result);
+        const image = response.data.result.image?.data;
+        console.log(image);
+        const base64String = btoa(
+          String.fromCharCode(...new Uint8Array(image))
+        );
+
+        setProductImage(base64String);
+      });
   }, []);
   const handleClose = () => props.setOpen(false);
 
@@ -85,31 +95,49 @@ export default function AdminProductView(props) {
           >
             <div className="flex gap-[50px]">
               <div>
-                <img src={ProductImage} className="h-[300px] w-[250px]"></img>
+                {/* {singleProduct.image ? (
+                  <img
+                    src={`data:image/png;base64,${productImage}`}
+                    alt="User"
+                    className="h-[300px] w-[250px]"
+                  />
+                ) : ( */}
+                  <img src={ProductImage} className="h-[300px] w-[250px]"></img>
+                {/* )} */}
               </div>
               <div className="flex flex-col w-[500px]  pr-[55px] items-center">
                 {console.log(singleProduct)}
-                <h1 className="text-[25px] ">{singleProduct.productName}</h1>
+                <h1 className="text-[25px] ">{singleProduct.title}</h1>
                 <div className="flex items-center justify-center text-[25px]">
-                  <FaIndianRupeeSign />
+                  <LiaRupeeSignSolid className="text-[12px] text-gray-800" />
 
                   <p className="font-serif text-[30px]">
-                    {singleProduct.productPrice}
+                    {singleProduct.discountedPrice}
                   </p>
                   <p className="italic text-sm pl-1"> /each</p>
                 </div>
+                <div className="flex items-center italic text-gray-700 gap-3">
+                  <div className="flex items-center">
+                    <p>M.R.P: </p>
+                    <div className="flex items-center line-through">
+                      <LiaRupeeSignSolid className="text-[12px] text-gray-800" />
+                      <p>{singleProduct.discountedPrice}</p>
+                    </div>
+                  </div>
+                  <p>({singleProduct.offer}% off)</p>
+                </div>
                 <p className="pt-4 text-gray-700">
-                  No.of stock: {singleProduct.quantity}
+                  No.of stock: {singleProduct.stock}
                 </p>
                 <p className="pt-4 text-gray-700">
                   Category: {singleProduct.category}
                 </p>
                 <div>
                   <div className="italic text-sm text-gray-700 p-5 text-justify h-[150px] w-full overflow-auto flex justify-center">
-                    Description: {singleProduct.productDetails}
+                    Description: {singleProduct.description}
                   </div>
                 </div>
-                <div className="flex gap-[200px] mt-3 mb-3">
+                <div className="flex gap-[200px] ">
                   <button
                     className="text-[40px] btn"
                     onClick={() => editProduct(singleProduct._id)}

@@ -1,29 +1,30 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import ProductImage from "../../assets/imageProduct.png";
-import { BiDollar } from "react-icons/bi";
+import ProductPic from "../../assets/imageProduct.png";
+import { LiaRupeeSignSolid } from "react-icons/lia";
 import "./AdminProductHome.css";
 import { useNavigate } from "react-router-dom";
 import AdminAddProduct from "./AdminAddProduct";
-import { Pagination } from "@mui/material";
 import PaginationTable from "../../components/Pagination/Pagination";
 import AdminProductView from "./AdminProductView";
 
 function AdminProductHomePage() {
   const [products, setProducts] = useState([]);
-  const [viewId, setViewId]= useState("")
+  const [viewId, setViewId] = useState("");
   const navigate = useNavigate();
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
+  const [productImage, setProductImage] = useState("");
+
   //viewProduct
   const [viewProductOpen, setViewProductOpen] = React.useState(false);
-  function viewProductDetails(id){
-    setViewId(id)
+  function viewProductDetails(id) {
+    setViewId(id);
     // console.log(id);
     setViewProductOpen(true);
     // console.log("hey hello");
-  };
+  }
   //addProduct
   const [addProductOpen, setAddProductOpen] = React.useState(false);
   const handleOpen = () => setAddProductOpen(true);
@@ -46,6 +47,13 @@ function AdminProductHomePage() {
         setTotalProduct(response.data.totalCount);
         setProducts(response.data.products);
         console.log(response.data.products);
+        const image = response.data.result.image?.data;
+        console.log(image);
+        const base64String = btoa(
+          String.fromCharCode(...new Uint8Array(image))
+        );
+
+        setProductImage(base64String);
       });
   }
   useEffect(() => {
@@ -60,18 +68,38 @@ function AdminProductHomePage() {
       <div className="flex justify-evenly gap-[35px] flex-wrap">
         {products.map((product) => (
           <button
+            key={product._id}
             className="bg-[#e9ecef] flex flex-col w-[280px] h-[300px] rounded-lg items-center shadow-xl "
-            onClick={()=>viewProductDetails(product._id)}
+            onClick={() => viewProductDetails(product._id)}
           >
             {/* {console.log(product._id)} */}
             <div>
-              <img src={ProductImage} className="w-[130px] m-6"></img>
+              {/* {console.log(productImage)} */}
+              {/* {product.image ? (
+                <img
+                  src={`data:image/png;base64,${productImage}`}
+                  alt={product.title}
+                  className="w-[130px] m-6"
+                />
+              ) : ( */}
+                <img src={ProductPic} className="w-[130px] m-6"></img>
+              {/* )} */}
             </div>
             <div className="flex flex-col justify-center items-center">
-              <h1>{product.productName}</h1>
+              <h1>{product.title}</h1>
               <div className="flex items-center">
-                <BiDollar />
-                <p>{product.productPrice}</p>
+                <LiaRupeeSignSolid className="text-[12px] text-gray-800" />
+                <p className="text-[20px] text-gray-800" >{product.discountedPrice}</p>
+              </div>
+              <div className="flex items-center italic text-gray-700 gap-3">
+                <div className="flex items-center">
+                  <p className="text-[12px]">M.R.P: </p>
+                  <div className="flex items-center line-through">
+                    <LiaRupeeSignSolid className="text-[12px] text-gray-500 line-through"/>
+                    <p className="text-[14px] text-gray-500">{product.price}</p>
+                  </div>
+                </div>
+                <p className="text-green-700">({product.offer}% off)</p>
               </div>
             </div>
             {/* <div className="flex flex-col gap-6 mt-7">
@@ -92,8 +120,13 @@ function AdminProductHomePage() {
       )}
       {/* to show product view modal */}
       {viewProductOpen ? (
-       
-        <AdminProductView viewId={viewId} open={viewProductOpen} setOpen={setViewProductOpen} listProduct={listProduct} products={products}/>
+        <AdminProductView
+          viewId={viewId}
+          open={viewProductOpen}
+          setOpen={setViewProductOpen}
+          listProduct={listProduct}
+          products={products}
+        />
       ) : (
         ""
       )}

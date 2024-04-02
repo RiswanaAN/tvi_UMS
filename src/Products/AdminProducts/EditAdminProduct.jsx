@@ -7,6 +7,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { LiaEditSolid } from "react-icons/lia";
+import ImageUpload from "../../components/ImageUpload/ImageUpload";
 
 const style = {
   position: "absolute",
@@ -21,12 +22,14 @@ const style = {
 };
 
 export default function EditAdminProduct(props) {
-  const [editProduct, setEditProduct] = useState({});
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productDetails, setProductDetails] = useState("");
   const [category, setCategory] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [stock, setStock] = useState("");
+  const [offer, setOffer]= useState("");
+  const [productPic, setProductPic] = useState("");
+  const [imagePath, setImagePath] = useState("");
 
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
@@ -42,23 +45,34 @@ export default function EditAdminProduct(props) {
       })
       .then((response) => {
         console.log(response.data);
-        setProductName(response.data.result.productName);
-        setProductPrice(response.data.result.productPrice);
-        setProductDetails(response.data.result.productDetails);
-        setCategory(response.data.result.category);
-        setQuantity(response.data.result.quantity);
+        setProductName(response.data.result.title);
+        setProductPrice(response.data.result.discountedPrice);
+        setProductDetails(response.data.result.description);
+        setCategory(response.data.result.categories);
+        setStock(response.data.result.stock);
+        setOffer(response.data.result.offer)
+        const image = response.data.result.image?.data;
+        console.log(image);
+        const base64String = btoa(
+          String.fromCharCode(...new Uint8Array(image))
+        );
+
+        setProductPic(base64String);
       });
   }, []);
 
   function editProductDetails(e) {
-    e.preventDefault()
-    const updatedDetails = {
-      productName: productName,
-      productPrice: productPrice,
-      productDetails: productDetails,
-      category: category,
-      quantity: quantity,
-    };
+    e.preventDefault();
+  //Body should be send in form data
+    const updatedDetails= new FormData()
+    updatedDetails.append("title", productName)
+    updatedDetails.append("price", productPrice)
+    updatedDetails.append("description", productDetails)
+    updatedDetails.append("category", category)
+    updatedDetails.append("offer", offer)
+    updatedDetails.append("stock", stock)
+    updatedDetails.append("color", "red")
+    updatedDetails.append("availability", "yes")
     axios
       .put(
         "http://localhost:8000/api/updateProdt/" + props.editPid,
@@ -72,8 +86,13 @@ export default function EditAdminProduct(props) {
       )
       .then((response) => {
         console.log(response);
-        props.setOpen(false);
+        // props.setOpen(false);
+        handleClose()
       });
+  }
+  //uploadingImage
+  function UploadingImage(e) {
+    setImagePath(e);
   }
 
   return (
@@ -97,7 +116,14 @@ export default function EditAdminProduct(props) {
             id="modal-modal-description"
             className="flex flex-wrap justify-center items-center mt-2"
           >
-            <img src={ProductImage} className="w-[200px] h-[200px]"></img>
+            <img
+              src={
+                imagePath ? imagePath : productPic ? productPic : ProductImage
+              }
+              className="w-[200px] h-[200px]"
+            ></img>
+            <ImageUpload UploadingImage={UploadingImage} />
+            {/* <img src={ProductImage} className="w-[200px] h-[200px]"></img> */}
             <form className="w-full max-w-lg  justify-center flex flex-col">
               <div className="flex flex-wrap -mx-3  p-3 gap-5">
                 <div className="flex flex-col">
@@ -152,18 +178,18 @@ export default function EditAdminProduct(props) {
                 </div>
                 <div className="flex flex-col">
                   <label
-                    id="quantity"
+                    id="stock"
                     className="text-gray-700 font-bold text-xs uppercase mb-2 "
                   >
-                    Quantity
+                    Stock
                   </label>
                   <input
-                    type="quantity"
-                    htmlFor="pprice"
+                    type="text"
+                    htmlFor="stock"
                     className="bg-gray-200 text-gray-700 rounded-md  py-2 px-4 mb-3 focus:outline-none focus:bg-white"
                     placeholder="No.of items"
-                    value={quantity}
-                    onInput={(e) => setQuantity(e.target.value)}
+                    value={stock}
+                    onInput={(e) => setStock(e.target.value)}
                   ></input>
                 </div>
               </div>
@@ -184,6 +210,22 @@ export default function EditAdminProduct(props) {
                     onInput={(e) => setProductDetails(e.target.value)}
                   ></input>
                 </div>
+                <div className="flex flex-col">
+                  <label
+                    id="offer"
+                    className="text-gray-700 font-bold text-xs uppercase mb-2 "
+                  >
+                    Offer (in %)
+                  </label>
+                  <input
+                    type="text"
+                    htmlFor="ofer"
+                    className="bg-gray-200 text-gray-700 rounded-md  py-2 px-4 mb-3 focus:outline-none focus:bg-white"
+                    placeholder="Offer in %"
+                    value={offer}
+                    onInput={(e) => setOffer(e.target.value)}
+                  ></input>
+                </div>
               </div>
               <div className="flex flex-wrap p-3 gap-5 justify-center">
                 <div className="flex flex-col">
@@ -191,7 +233,7 @@ export default function EditAdminProduct(props) {
                     className="btn font-bold flex justify-center gap-1 pl-3 pr-3"
                     onClick={editProductDetails}
                   >
-                    <LiaEditSolid className="text-xl"/>
+                    <LiaEditSolid className="text-xl" />
                     Edit
                   </button>
                 </div>

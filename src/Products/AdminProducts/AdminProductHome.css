@@ -24,10 +24,10 @@
   transition: 0.5s ease-out;
 }
 .btn1{
-    --color: #b8860b;
+    --color: #ff9f00;
     --color2: white;
     /* padding: 0.8em 1.75em; */
-    padding: 8px 5px;
+    /* padding: 8px 5px; */
     background-color: var(--color);
     border-radius: 6px;
     border: 0.3px solid var(--color);
@@ -36,11 +36,15 @@
     overflow: hidden;
     cursor: pointer;
     z-index: 1;
-    font-weight: 300;
-    font-size: 17px;
-    font-family: "Roboto", "Segoe UI", sans-serif;
+    /* font-weight: 300;
+    font-size: 17px; */
+    /* font-family: "Roboto", "Segoe UI", sans-serif; */
     text-transform: uppercase;
     color: var(--color2);
+    width: 195px;
+    flex: auto;
+    justify-items: center;
+
   }
   
   .btn1:hover {
@@ -49,7 +53,7 @@
     transition: 0.5s ease-out;
   }
   .btn2 {
-    --color: maroon;
+    --color: #fb641b;
     --color2: white;
     /* padding: 0.8em 1.75em; */
     padding: 8px 5px;

@@ -26,7 +26,8 @@ export default function AdminAddProduct(props) {
   const [productPrice, setProductPrice] = useState("");
   const [productDetails, setProductDetails] = useState("");
   const [category, setCategory] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [offer, setOffer] = useState("");
+  const [stock, setStock] = useState("");
 
   const navigate = useNavigate();
   const adminToken = useSelector((state) => state.auth.adminToken);
@@ -35,13 +36,16 @@ export default function AdminAddProduct(props) {
 
   function addNewProduct(e) {
     e.preventDefault();
-    const product = {
-      productName: productName,
-      productPrice: productPrice,
-      productDetails: productDetails,
-      category: category,
-      quantity: quantity,
-    };
+
+    const product = new FormData();
+    product.append("title", productName);
+    product.append("price", productPrice);
+    product.append("description", productDetails);
+    product.append("category", category);
+    product.append("offer", offer);
+    product.append("stock", stock);
+    product.append("color", "red");
+    product.append("availability", "yes");
     axios
       .post("http://localhost:8000/api/addProdt", product, {
         headers: {
@@ -51,7 +55,7 @@ export default function AdminAddProduct(props) {
       })
       .then((response) => {
         console.log(response);
-        props.setOpen(false)
+        props.setOpen(false);
         // navigate("/admin/product");
       });
   }
@@ -132,18 +136,18 @@ export default function AdminAddProduct(props) {
                 </div>
                 <div className="flex flex-col">
                   <label
-                    id="quantity"
+                    id="offer"
                     className="text-gray-700 font-bold text-xs uppercase mb-2 "
                   >
-                    Quantity
+                    Offer (in %)
                   </label>
                   <input
-                    type="quantity"
-                    htmlFor="pprice"
+                    type="text"
+                    htmlFor="ofer"
                     className="bg-gray-200 text-gray-700 rounded-md  py-2 px-4 mb-3 focus:outline-none focus:bg-white"
-                    placeholder="No.of items"
-                    value={quantity}
-                    onInput={(e) => setQuantity(e.target.value)}
+                    placeholder="Offer in %"
+                    value={offer}
+                    onInput={(e) => setOffer(e.target.value)}
                   ></input>
                 </div>
               </div>
@@ -162,6 +166,22 @@ export default function AdminAddProduct(props) {
                     placeholder="product details"
                     value={productDetails}
                     onInput={(e) => setProductDetails(e.target.value)}
+                  ></input>
+                </div>
+                <div className="flex flex-col">
+                  <label
+                    id="stock"
+                    className="text-gray-700 font-bold text-xs uppercase mb-2 "
+                  >
+                    Stock
+                  </label>
+                  <input
+                    type="text"
+                    htmlFor="stock"
+                    className="bg-gray-200 text-gray-700 rounded-md  py-2 px-4 mb-3 focus:outline-none focus:bg-white"
+                    placeholder="No.of items"
+                    value={stock}
+                    onInput={(e) => setStock(e.target.value)}
                   ></input>
                 </div>
               </div>
