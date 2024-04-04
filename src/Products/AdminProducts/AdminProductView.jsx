@@ -29,7 +29,7 @@ export default function AdminProductView(props) {
   //editProduct
   const [editProductOpen, setEditProductOpen] = React.useState(false);
   const [editPid, setEditPid] = React.useState("");
-  const [productImage, setProductImage] = React.useState("");
+  const [productImageUrl, setProductImageUrl] = React.useState("");
   function editProduct(id) {
     setEditPid(id);
     setEditProductOpen(true);
@@ -49,13 +49,16 @@ export default function AdminProductView(props) {
       })
       .then((response) => {
         setSingleProduct(response.data.result);
-        const image = response.data.result.image?.data;
-        console.log(image);
-        const base64String = btoa(
-          String.fromCharCode(...new Uint8Array(image))
-        );
+        // console.log(response.data.result.image[0]?.data)
+        if (response.data.result.image.length > 0) {
+          const image = response.data.result.image[0].data;
+          const base64String = btoa(
+            String.fromCharCode(...new Uint8Array(image))
+          );
 
-        setProductImage(base64String);
+          var imageUrl = `data:image/jpeg;base64,${base64String}`;
+          setProductImageUrl(imageUrl);
+        }
       });
   }, []);
   const handleClose = () => props.setOpen(false);
@@ -69,7 +72,6 @@ export default function AdminProductView(props) {
         },
       })
       .then((response) => {
-        console.log(response);
         props.setOpen(false);
         props.listProduct();
       });
@@ -95,15 +97,16 @@ export default function AdminProductView(props) {
           >
             <div className="flex gap-[50px]">
               <div>
-                {/* {singleProduct.image ? (
+                {/* {console.log(singleProduct.image.length)} */}
+                {productImageUrl? (
                   <img
-                    src={`data:image/png;base64,${productImage}`}
+                    src={productImageUrl}
                     alt="User"
                     className="h-[300px] w-[250px]"
                   />
-                ) : ( */}
+                ) : (
                   <img src={ProductImage} className="h-[300px] w-[250px]"></img>
-                {/* )} */}
+                )}
               </div>
               <div className="flex flex-col w-[500px]  pr-[55px] items-center">
                 {console.log(singleProduct)}
@@ -121,7 +124,7 @@ export default function AdminProductView(props) {
                     <p>M.R.P: </p>
                     <div className="flex items-center line-through">
                       <LiaRupeeSignSolid className="text-[12px] text-gray-800" />
-                      <p>{singleProduct.discountedPrice}</p>
+                      <p>{singleProduct.price}</p>
                     </div>
                   </div>
                   <p>({singleProduct.offer}% off)</p>

@@ -56,6 +56,7 @@ export default function AdminAddProduct(props) {
       .then((response) => {
         console.log(response);
         props.setOpen(false);
+        props.listProduct()
         // navigate("/admin/product");
       });
   }

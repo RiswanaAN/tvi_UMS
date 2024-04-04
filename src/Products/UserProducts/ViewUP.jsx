@@ -9,6 +9,7 @@ import { FaIndianRupeeSign } from "react-icons/fa6";
 import { GiElectric } from "react-icons/gi";
 import { BiCartDownload } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -27,13 +28,13 @@ export default function viewUP(props) {
   const [singleProduct, setSingleProduct] = React.useState({});
   const [noOfStock, setNoOfStock] = React.useState("");
   const [noOfItem, setNoOfItem] = React.useState(0);
-  
+  const [productImageUrl, setProductImageUrl] = React.useState("");
+  const navigate =useNavigate()
   //token from store
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
 
   React.useEffect(() => {
-    console.log("cart Products:"+props.products);
     listcartItems();
   }, []);
   function listcartItems() {
@@ -46,8 +47,16 @@ export default function viewUP(props) {
       })
       .then((response) => {
         setSingleProduct(response.data.result);
-        console.log(response.data.result);
         setNoOfStock(response.data.result.stock);
+        if (response.data.result.image.length > 0) {
+          const image = response.data.result.image[0].data;
+          const base64String = btoa(
+            String.fromCharCode(...new Uint8Array(image))
+          );
+
+          var imageUrl = `data:image/jpeg;base64,${base64String}`;
+          setProductImageUrl(imageUrl);
+        }
       });
   }
   const handleClose = () => props.setOpen(false);
@@ -68,7 +77,6 @@ export default function viewUP(props) {
         }
       )
       .then((response) => {
-        console.log(response);
         handleClose();
       });
   }
@@ -82,25 +90,28 @@ export default function viewUP(props) {
         },
       })
       .then((response) => {
-        console.log(response);
         handleClose();
         props.listProduct();
       });
   }
   //remove from wishlist
-  function removeFromWishList(id){
-    axios.delete("http://localhost:8000/api/delete-wishist/"+id,{
-      headers:{
-        Authorization: tokenFromLS|| adminToken,
-        genericvalue: "agent"
-      }
-    }).then((response)=>{
-      
-      console.log(response);
-      handleClose();
-      props.listProduct();
-    })
+  function removeFromWishList(id) {
+    axios
+      .delete("http://localhost:8000/api/delete-wishist/" + id, {
+        headers: {
+          Authorization: tokenFromLS || adminToken,
+          genericvalue: "agent",
+        },
+      })
+      .then((response) => {
+        handleClose();
+        props.listProduct();
+      });
   }
+  //BuyProduct
+  // function buyProduct(){
+  //   navigate()
+  // }
   return (
     <div>
       <Modal
@@ -122,9 +133,17 @@ export default function viewUP(props) {
           >
             <div className="flex gap-[4px]">
               <div>
-                <img src={ProductImage} className="h-[300px] w-[250px]"></img>
+                {productImageUrl ? (
+                  <img
+                    src={productImageUrl}
+                    alt="User"
+                    className="h-[300px] w-[350px]"
+                  />
+                ) : (
+                  <img src={ProductImage} className="h-[300px] w-[250px]"></img>
+                )}{" "}
               </div>
-              <div className="flex flex-col ml-[30px] w-[500px]  pr-[55px] items-center">
+              <div className="flex flex-col ml-[30px] w-[400px]  pr-[55px] items-center">
                 {/* {console.log(singleProduct)} */}
                 <h1 className="text-[25px] ">{singleProduct.title}</h1>
                 <div className="flex items-center justify-center">
@@ -138,13 +157,11 @@ export default function viewUP(props) {
                 <div>
                   <div>
                     <div className="flex italic font-serif text-[15px] gap-1">
-                    <p >
-                      M.R.P: 
-                    </p>
-                    <p className="line-through flex items-center text-gray-800">
-                    <FaIndianRupeeSign />
-                    {singleProduct.price}
-                    </p>
+                      <p>M.R.P:</p>
+                      <p className="line-through flex items-center text-gray-800">
+                        <FaIndianRupeeSign />
+                        {singleProduct.price}
+                      </p>
                     </div>
                     <p className="font-serif text-[15px] text-green-800">
                       ({singleProduct.offer}% off)
@@ -160,7 +177,7 @@ export default function viewUP(props) {
                 ) : (
                   ""
                 )}
-               
+
                 <p className="pt-4 text-gray-700">
                   Category: {singleProduct.category}
                 </p>
@@ -178,10 +195,10 @@ export default function viewUP(props) {
                       <BiCartDownload className="text-2xl" />
                       Add to Cart
                     </button>
-                  ):props.currentPage == "wishlist" ? (
+                  ) : props.currentPage == "wishlist" ? (
                     <button
-                    className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-red-700 rounded-md"                      
-                    onClick={() => removeFromWishList(singleProduct._id)}
+                      className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-red-700 rounded-md"
+                      onClick={() => removeFromWishList(singleProduct._id)}
                     >
                       <BiCartDownload className="text-2xl" />
                       Remove From Wishlist
@@ -194,7 +211,7 @@ export default function viewUP(props) {
                       <AiOutlineDelete className="text-2xl" />
                       Remove
                     </button>
-                  ):(
+                  ) : (
                     <button
                       className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-[#ff9f00] rounded-md"
                       onClick={() => addToCart(singleProduct._id)}
@@ -203,7 +220,7 @@ export default function viewUP(props) {
                       Add to Cart
                     </button>
                   )}
-                  <button className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-[#fb641b] rounded-md">
+                  <button className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-[#fb641b] rounded-md" onClick={buyProduct}>
                     <GiElectric className="text-2xl" />
                     Buy Now
                   </button>

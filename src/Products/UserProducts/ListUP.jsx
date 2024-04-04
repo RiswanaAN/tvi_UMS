@@ -24,34 +24,37 @@ function ListUP(props) {
   }
   //addwishlist and deletefromWishlist
   function addOrDeleteWishlist(id) {
-    
     if (wishlistProduct.includes(id)) {
-      axios.delete("http://localhost:8000/api/delete-wishist/"+id,{
-      headers:{
-        Authorization: tokenFromLS|| adminToken,
-        genericvalue: "agent"
-      }
-    }).then((response)=>{
-      
-      console.log(response);
-      setWishlistProduct(wishlistProduct.filter((productId) => productId !== id));
-
-    })
-     
+      axios
+        .delete("http://localhost:8000/api/delete-wishist/" + id, {
+          headers: {
+            Authorization: tokenFromLS || adminToken,
+            genericvalue: "agent",
+          },
+        })
+        .then((response) => {
+          setWishlistProduct(
+            wishlistProduct.filter((productId) => productId !== id)
+          );
+        });
     } else {
-      axios.post("http://localhost:8000/api/add-to-wishlist/"+id,{},{
-      headers:{
-        Authorization: adminToken|| tokenFromLS,
-        genericvalue: "agent"
-      }
-    }).then((response)=>{
-      console.log(response);
-      setWishlistProduct([...wishlistProduct, id]);
-    })
-      
+      axios
+        .post(
+          "http://localhost:8000/api/add-to-wishlist/" + id,
+          {},
+          {
+            headers: {
+              Authorization: adminToken || tokenFromLS,
+              genericvalue: "agent",
+            },
+          }
+        )
+        .then((response) => {
+          setWishlistProduct([...wishlistProduct, id]);
+        });
     }
   }
- 
+
   //pagination
   const [totalProduct, setTotalProduct] = useState();
 
@@ -60,7 +63,6 @@ function ListUP(props) {
   }
   //function to list all products
   function listProduct(no = 1) {
-    console.log(props.selectedMenu);
     axios
       .get("http://localhost:8000/api/getProdt?page=" + no, {
         headers: {
@@ -71,67 +73,82 @@ function ListUP(props) {
       .then((response) => {
         setTotalProduct(response.data.totalCount);
         setProducts(response.data.products);
-        console.log(response.data.products);
       });
   }
   useEffect(() => {
     listProduct();
-    console.log(wishlistProduct);
   }, []);
 
   return (
     <div className="flex flex-col justify-center items-center ">
       <div className="flex justify-evenly gap-[75px] flex-wrap p-7">
-        {products.map((product) => (
-          <>
-            <button className="bg-[#e9ecef] flex flex-col w-[280px] h-[300px] rounded-lg items-center shadow-xl relative hover:scale-110">
-              <button
-                className="absolute text-xl  text-gray-700 right-2 top-2"
-                onClick={() => {
-                  addOrDeleteWishlist(product._id);
-                }}
-              >
-                {console.log(wishlistProduct)}
-                {wishlistProduct.includes(product._id) ? (
-                  <BsHeartFill className="text-red-500" />
-               ) : (
-                  <BsHeart />
-                )}
-              </button>
+        {products.map((product) => {
+          if (product.image.length > 0) {
+            const image = product.image[0]?.data;
 
-              <div
-                onClick={() => viewProductDetails(product._id)}
-                className="mt-[30px] w-full h-full flex flex-col justify-center items-center"
-              >
-                <div>
-                  <img src={ProductImage} className="w-[130px] m-6"></img>
-                </div>
-                <div className="flex flex-col justify-center items-center">
-                  <h1>{product.title}</h1>
-                  <div className="flex items-center">
-                    <LiaRupeeSignSolid className="text-[18px] text-gray-800" />
-                    <p className="text-[25px] text-gray-800">
-                      {product.discountedPrice}
-                    </p>
+            const base64String = btoa(
+              String.fromCharCode(...new Uint8Array(image))
+            );
+            var imageUrl = `data:image/jpeg;base64,${base64String}`;
+          }
+
+          return (
+            <>
+              <button className="bg-[#e9ecef] flex flex-col w-[280px] h-[350px] rounded-lg items-center shadow-xl relative hover:scale-110">
+                <button
+                  className="absolute text-xl  text-gray-700 right-2 top-2"
+                  onClick={() => {
+                    addOrDeleteWishlist(product._id);
+                  }}
+                >
+                  {wishlistProduct.includes(product._id) ? (
+                    <BsHeartFill className="text-red-500" />
+                  ) : (
+                    <BsHeart />
+                  )}
+                </button>
+
+                <div
+                  onClick={() => viewProductDetails(product._id)}
+                  className="w-full h-full flex flex-col justify-center items-center"
+                >
+                  <div>
+                    {product.image.length > 0 ? (
+                      <img
+                        src={imageUrl}
+                        alt={product.title}
+                        className="w-[140px] m-6"
+                      />
+                    ) : (
+                      <img src={ProductImage} className="w-[140px] m-6"></img>
+                    )}{" "}
                   </div>
-                  <div className="flex items-center italic text-gray-700 gap-3">
+                  <div className="flex flex-col justify-center items-center">
+                    <h1>{product.title}</h1>
                     <div className="flex items-center">
-                      <p className="text-[12px]">M.R.P: </p>
-                      <div className="flex items-center line-through">
-                        <LiaRupeeSignSolid className="text-[12px] text-gray-500 line-through" />
-                        <p className="text-[14px] text-gray-500">
-                          {product.price}
-                        </p>
-                      </div>
+                      <LiaRupeeSignSolid className="text-[18px] text-gray-800" />
+                      <p className="text-[25px] text-gray-800">
+                        {product.discountedPrice}
+                      </p>
                     </div>
-                    <p className="text-green-700">({product.offer}% off)</p>
+                    <div className="flex items-center italic text-gray-700 gap-3">
+                      <div className="flex items-center">
+                        <p className="text-[12px]">M.R.P: </p>
+                        <div className="flex items-center line-through">
+                          <LiaRupeeSignSolid className="text-[12px] text-gray-500 line-through" />
+                          <p className="text-[14px] text-gray-500">
+                            {product.price}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-green-700">({product.offer}% off)</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-            </button>
-          </>
-        ))}
+              </button>
+            </>
+          );
+        })}
       </div>
       <div className="m-4">
         <PaginationTable totalNumber={totalProduct} currentPage={currentPage} />

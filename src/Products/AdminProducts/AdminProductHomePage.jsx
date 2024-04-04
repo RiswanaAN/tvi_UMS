@@ -46,14 +46,6 @@ function AdminProductHomePage() {
       .then((response) => {
         setTotalProduct(response.data.totalCount);
         setProducts(response.data.products);
-        console.log(response.data.products);
-        const image = response.data.result.image?.data;
-        console.log(image);
-        const base64String = btoa(
-          String.fromCharCode(...new Uint8Array(image))
-        );
-
-        setProductImage(base64String);
       });
   }
   useEffect(() => {
@@ -66,48 +58,60 @@ function AdminProductHomePage() {
         Add Product
       </button>
       <div className="flex justify-evenly gap-[35px] flex-wrap">
-        {products.map((product) => (
-          <button
-            key={product._id}
-            className="bg-[#e9ecef] flex flex-col w-[280px] h-[300px] rounded-lg items-center shadow-xl "
-            onClick={() => viewProductDetails(product._id)}
-          >
-            {/* {console.log(product._id)} */}
-            <div>
-              {/* {console.log(productImage)} */}
-              {/* {product.image ? (
+        {products.map((product) => {
+          if (product.image.length > 0) {
+            const image = product.image[0]?.data;
+            
+            const base64String = btoa(
+              String.fromCharCode(...new Uint8Array(image))
+            );
+            var imageUrl = `data:image/jpeg;base64,${base64String}`;
+          }
+          return (
+            <button
+              key={product._id}
+              className="bg-[#e9ecef] flex flex-col w-[280px] h-[300px] rounded-lg items-center shadow-xl "
+              onClick={() => viewProductDetails(product._id)}
+            >
+              <div>
+              {product.image.length>0 ? (
                 <img
-                  src={`data:image/png;base64,${productImage}`}
+                  src={imageUrl}
                   alt={product.title}
-                  className="w-[130px] m-6"
+                  className="w-[130px] h-[140px] m-6"
                 />
-              ) : ( */}
+              ) : (
                 <img src={ProductPic} className="w-[130px] m-6"></img>
-              {/* )} */}
-            </div>
-            <div className="flex flex-col justify-center items-center">
-              <h1>{product.title}</h1>
-              <div className="flex items-center">
-                <LiaRupeeSignSolid className="text-[12px] text-gray-800" />
-                <p className="text-[20px] text-gray-800" >{product.discountedPrice}</p>
+                )}  
               </div>
-              <div className="flex items-center italic text-gray-700 gap-3">
+              <div className="flex flex-col justify-center items-center">
+                <h1>{product.title}</h1>
                 <div className="flex items-center">
-                  <p className="text-[12px]">M.R.P: </p>
-                  <div className="flex items-center line-through">
-                    <LiaRupeeSignSolid className="text-[12px] text-gray-500 line-through"/>
-                    <p className="text-[14px] text-gray-500">{product.price}</p>
-                  </div>
+                  <LiaRupeeSignSolid className="text-[12px] text-gray-800" />
+                  <p className="text-[20px] text-gray-800">
+                    {product.discountedPrice}
+                  </p>
                 </div>
-                <p className="text-green-700">({product.offer}% off)</p>
+                <div className="flex items-center italic text-gray-700 gap-3">
+                  <div className="flex items-center">
+                    <p className="text-[12px]">M.R.P: </p>
+                    <div className="flex items-center line-through">
+                      <LiaRupeeSignSolid className="text-[12px] text-gray-500 line-through" />
+                      <p className="text-[14px] text-gray-500">
+                        {product.price}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-green-700">({product.offer}% off)</p>
+                </div>
               </div>
-            </div>
-            {/* <div className="flex flex-col gap-6 mt-7">
+              {/* <div className="flex flex-col gap-6 mt-7">
               <button className="btn">Add to cart</button>
               <button className="btn">Buy Now</button>
             </div> */}
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
       <div className="m-4">
         <PaginationTable totalNumber={totalProduct} currentPage={currentPage} />
