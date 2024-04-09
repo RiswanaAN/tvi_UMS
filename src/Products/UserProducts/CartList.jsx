@@ -29,7 +29,7 @@ function CartList(props) {
         },
       })
       .then((response) => {
-        setCartItems(response.data.cartItems[0]);
+        setCartItems(response.data.results[0]);
       });
   }
   useEffect(() => {
@@ -49,7 +49,7 @@ function CartList(props) {
             <>
               <button className="bg-[#e9ecef] flex flex-col w-[280px] h-[300px] rounded-lg items-center shadow-xl relative hover:scale-110">
                 <div
-                  onClick={() => viewProductDetails(items._id)}
+                  onClick={() => viewProductDetails(items.productId)}
                   className="mt-[40px] w-full h-full flex flex-col justify-center items-center"
                 >
                   <div>
@@ -86,7 +86,8 @@ function CartList(props) {
           open={viewProductOpen}
           setOpen={setViewProductOpen}
           listProduct={listCartItems}
-          products={cartItems}
+          products={cartItems.results}
+          dashboardMenu={props.dashboardMenu}
         />
       ) : (
         ""

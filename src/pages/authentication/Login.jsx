@@ -11,8 +11,8 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState(""); //admin@gmail.com
-  const [password, setPassword] = useState(""); //admin@12345
+  const [email, setEmail] = useState("sa@gmail.com"); //admin@gmail.com
+  const [password, setPassword] = useState("admin@123"); //admin@12345
   const [message, setMessage] = useState(false); //email validation
   const [passMessage, setPassMessage] = useState(false); //password validation
   const userDetails = useSelector((state) => state.auth.user);

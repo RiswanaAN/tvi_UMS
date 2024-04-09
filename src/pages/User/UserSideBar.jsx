@@ -1,20 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoIosHeartEmpty } from "react-icons/io";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { MdOutlineStore } from "react-icons/md";
 import "../../components/SideBar/SideBar.css";
-import CartBadge from "../../components/Badge/CartBadge";
 
 function UserSideBar(props) {
-  const navigate = useNavigate();
-  function createUserPage() {
-    navigate("/register");
-  }
-  
+  // useEffect(()=>{
+  //   console.log(props);
+  // })
   return (
-    <div className="sidebar flex flex-col bg-[#212529] p-4 ">
+    <div className="sidebar flex flex-col bg-[#212529] p-4 h-[100vh]">
       <div className="text-white flex flex-col gap-3">
         <div className="text-[#FFFFFF40] text-[14px] pl-3">
           core

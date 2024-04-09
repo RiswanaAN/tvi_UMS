@@ -9,7 +9,6 @@ import { FaIndianRupeeSign } from "react-icons/fa6";
 import { GiElectric } from "react-icons/gi";
 import { BiCartDownload } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
 
 const style = {
   position: "absolute",
@@ -24,12 +23,11 @@ const style = {
   p: 4,
 };
 
-export default function viewUP(props) {
+export default function ViewUP(props) {
   const [singleProduct, setSingleProduct] = React.useState({});
   const [noOfStock, setNoOfStock] = React.useState("");
   const [noOfItem, setNoOfItem] = React.useState(0);
   const [productImageUrl, setProductImageUrl] = React.useState("");
-  const navigate =useNavigate()
   //token from store
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
@@ -42,7 +40,7 @@ export default function viewUP(props) {
       .get("http://localhost:8000/api/get-one/" + props.viewId, {
         headers: {
           Authorization: adminToken || tokenFromLS,
-          genericvalue: "admin",
+          genericvalue: "agent",
         },
       })
       .then((response) => {
@@ -64,7 +62,6 @@ export default function viewUP(props) {
   //addToCart
   function addToCart(id) {
     setNoOfItem(noOfItem + 1);
-    // console.log(noOfItem);
     axios
       .post(
         "http://localhost:8000/api/add-to-cart/" + id,
@@ -108,10 +105,7 @@ export default function viewUP(props) {
         props.listProduct();
       });
   }
-  //BuyProduct
-  // function buyProduct(){
-  //   navigate()
-  // }
+
   return (
     <div>
       <Modal
@@ -144,7 +138,6 @@ export default function viewUP(props) {
                 )}{" "}
               </div>
               <div className="flex flex-col ml-[30px] w-[400px]  pr-[55px] items-center">
-                {/* {console.log(singleProduct)} */}
                 <h1 className="text-[25px] ">{singleProduct.title}</h1>
                 <div className="flex items-center justify-center">
                   <FaIndianRupeeSign className="text-[18px] text-gray-800" />
@@ -220,7 +213,16 @@ export default function viewUP(props) {
                       Add to Cart
                     </button>
                   )}
-                  <button className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-[#fb641b] rounded-md" onClick={buyProduct}>
+                  <button
+                    className="text-white flex w-[160px] h-[50px] items-center justify-center gap-2 pl-2 pr-2 bg-[#fb641b] rounded-md"
+                    onClick={(e) =>
+                      props.dashboardMenu(
+                        "buyproduct",
+                        props.products,
+                        props.viewId
+                      )
+                    }
+                  >
                     <GiElectric className="text-2xl" />
                     Buy Now
                   </button>
@@ -230,16 +232,6 @@ export default function viewUP(props) {
           </Typography>
         </Box>
       </Modal>
-      {/* {editProductOpen ? (
-        <EditAdminProduct
-          open={editProductOpen}
-          setOpen={setEditProductOpen}
-          editPid={editPid}
-          products={props.products}
-        />
-      ) : (
-        ""
-      )} */}
     </div>
   );
 }

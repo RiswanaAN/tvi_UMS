@@ -1,20 +1,27 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import UserSideBar from "./UserSideBar";
 import UserNavbar from "./UserNavbar";
 import UserDetails from "./UserDetails";
 import ListUP from "../../Products/UserProducts/ListUP";
 import CartList from "../../Products/UserProducts/CartList";
 import WishList from "../../Products/UserProducts/WishList";
+import BuyProduct from "../../Products/UserProducts/BuyProduct";
+import AddAddress from "../../Products/UserProducts/UserAddress/AddAddress";
+import EditAddress from "../../Products/UserProducts/UserAddress/EditAddress";
+import AddressModal from "../../Products/UserProducts/UserAddress/AddressModal";
 
 function UserHomePage() {
   const [menuClicks, setMenuClicks] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("");
+  const [products, setProducts] = useState({});
+  const [address, setAddress] = useState({});
+  const [allAddress, setAllAddress] = useState([]);
+
+  const [pId, setPId] = useState("");
   const [user, setUser] = useState({});
   const [icon, setIcon] = useState("");
-  const navigate = useNavigate();
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
 
@@ -27,33 +34,33 @@ function UserHomePage() {
         },
       })
       .then((response) => {
-        console.log(response.data.result);
         setUser(response.data.result);
-        // console.log(response.data.data.firstName);
         const fName = response.data.result.firstName;
         const lName = response.data.result.lastName;
-        // console.log(fName, lName);
         const userIcon = fName.charAt(0) + lName.charAt(0);
         setIcon(userIcon);
-        console.log(icon);
       })
       .catch((error) => console.log(error));
   }, []);
 
   function clickMenuButton() {
-    console.log(menuClicks);
     setMenuClicks((prev) => !prev);
   }
-  function dashboardMenu(msg) {
+  const dashboardMenu = (msg, products, viewId, address, allAddress) => {
     setSelectedMenu(msg);
-  }
+    setProducts(products);
+    setPId(viewId);
+    setAddress(address);
+    setAllAddress(allAddress)
+    console.log("=========", allAddress);
+  };
 
   return (
     <div className="flex flex-col w-screen">
       <div className="w-full">
         <UserNavbar clickMenuButton={clickMenuButton} icon={icon} />
       </div>
-      <div className="flex">
+      <div className="flex h-[100vh]">
         <div
           className={`transition-all duration-500 ${
             menuClicks ? "w-[250px]" : "w-0"
@@ -87,7 +94,10 @@ function UserHomePage() {
             </div>
 
             <div className="w-full">
-              <ListUP selectedMenu={selectedMenu} />
+              <ListUP
+                selectedMenu={selectedMenu}
+                dashboardMenu={dashboardMenu}
+              />
             </div>
           </div>
         ) : selectedMenu == "wishlist" ? (
@@ -100,7 +110,10 @@ function UserHomePage() {
             </div>
 
             <div className="w-full">
-              <WishList selectedMenu={selectedMenu} />
+              <WishList
+                selectedMenu={selectedMenu}
+                dashboardMenu={dashboardMenu}
+              />
             </div>
           </div>
         ) : selectedMenu == "cart" ? (
@@ -115,7 +128,87 @@ function UserHomePage() {
             </div>
 
             <div className="w-full">
-              <CartList selectedMenu={selectedMenu} />
+              <CartList
+                selectedMenu={selectedMenu}
+                dashboardMenu={dashboardMenu}
+              />
+            </div>
+          </div>
+        ) : selectedMenu == "buyproduct" ? (
+          <div className="flex flex-col w-full">
+            <div className="dashboard p-3 pl-6 text-[30px] text-[#212529]">
+              <h1 className="uppercase">Purchase Item</h1>
+            </div>
+
+            <div className="w-full">
+              <BuyProduct
+                dashboardMenu={dashboardMenu}
+                address={address}
+                products={products}
+                pId={pId}
+              />
+              {/* {console.log(products)} */}
+            </div>
+          </div>
+        ) : selectedMenu == "addressList" ? (
+          <div className="flex flex-col w-full">
+            <div className="dashboard p-3 pl-6 text-[35px] text-[#212529]">
+              <h1 className="">Address</h1>
+              <div className="w-full bg-[#e9ecef] rounded-md">
+                <p className="text-[15px] text-[#6c757d] p-[10px]">Address</p>
+              </div>
+            </div>
+
+            <div className="w-full">
+              <AddressModal
+                products={products}
+                pId={pId}
+                dashboardMenu={dashboardMenu}
+              />
+
+              {/* {console.log(products)} */}
+            </div>
+          </div>
+        ) : selectedMenu == "addaddress" ? (
+          <div className="flex flex-col w-full">
+            <div className="dashboard p-3 pl-6 text-[35px] text-[#212529]">
+              <h1 className="">Add Address</h1>
+              <div className="w-full bg-[#e9ecef] rounded-md">
+                <p className="text-[15px] text-[#6c757d] p-[10px]">
+                  Add Address
+                </p>
+              </div>
+            </div>
+
+            <div className="w-full">
+              <AddAddress
+                products={products}
+                pId={pId}
+                address={address}
+                allAddress={allAddress}
+                dashboardMenu={dashboardMenu}
+              />
+              {/* {console.log(products)} */}
+            </div>
+          </div>
+        ) : selectedMenu == "editaddress" ? (
+          <div className="flex flex-col w-full">
+            <div className="dashboard p-3 pl-6 text-[35px] text-[#212529]">
+              <h1 className="">Edit Address</h1>
+              <div className="w-full bg-[#e9ecef] rounded-md">
+                <p className="text-[15px] text-[#6c757d] p-[10px]">
+                  Edit Address
+                </p>
+              </div>
+            </div>
+
+            <div className="w-full">
+              <EditAddress
+                address={address}
+                pId={pId}
+                dashboardMenu={dashboardMenu}
+              />
+              {/* {console.log(products)} */}
             </div>
           </div>
         ) : (
@@ -128,7 +221,10 @@ function UserHomePage() {
             </div>
 
             <div className="w-full">
-              <ListUP selectedMenu={selectedMenu} />
+              <ListUP
+                selectedMenu={selectedMenu}
+                dashboardMenu={dashboardMenu}
+              />
             </div>
           </div>
         )}

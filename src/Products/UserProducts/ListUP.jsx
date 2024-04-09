@@ -71,8 +71,23 @@ function ListUP(props) {
         },
       })
       .then((response) => {
+        // console.log(response);
         setTotalProduct(response.data.totalCount);
         setProducts(response.data.products);
+        axios
+        .get("http://localhost:8000/api/wishlist", {
+          headers: {
+            Authorization: adminToken || tokenFromLS,
+            genericvalue: "agent",
+          },
+        })
+        .then((response) => {
+          const wishListProduct= response.data.result[0].results
+          wishListProduct.map((wishlistItem)=>{
+            setWishlistProduct(prev=>[...prev, wishlistItem._id]);
+          })
+        }
+        );
       });
   }
   useEffect(() => {
@@ -82,7 +97,7 @@ function ListUP(props) {
   return (
     <div className="flex flex-col justify-center items-center ">
       <div className="flex justify-evenly gap-[75px] flex-wrap p-7">
-        {products.map((product) => {
+        {products.map((product,i) => {
           if (product.image.length > 0) {
             const image = product.image[0]?.data;
 
@@ -153,6 +168,7 @@ function ListUP(props) {
       <div className="m-4">
         <PaginationTable totalNumber={totalProduct} currentPage={currentPage} />
       </div>
+      {/* {console.log("its= "+props.selectedMenu,props.dashboardMenu)} */}
       {viewProductOpen ? (
         <ViewUP
           currentPage={props.selectedMenu}
@@ -161,6 +177,7 @@ function ListUP(props) {
           setOpen={setViewProductOpen}
           listProduct={listProduct}
           products={products}
+          dashboardMenu={props.dashboardMenu}
         />
       ) : (
         ""

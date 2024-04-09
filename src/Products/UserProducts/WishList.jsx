@@ -1,21 +1,15 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import PaginationTable from "../../components/Pagination/Pagination";
 import ViewUP from "../UserProducts/ViewUP";
 import ProductImage from "../../assets/imageProduct.png";
 import { BiDollar } from "react-icons/bi";
-import { FaRegHeart } from "react-icons/fa";
-import { BsHeartFill } from "react-icons/bs";
-import { BsHeart } from "react-icons/bs";
-
 import "../../Products/AdminProducts/AdminProductHome.css";
 
 function WishList(props) {
   const [wishlistItem, setWishlistItem] = useState([]);
   const [viewId, setViewId] = useState("");
-  // const [count,setCount]= use
-  //   const [wishlistProduct, setWishlistProduct] = useState([]);
+
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
   //viewProduct
@@ -90,7 +84,8 @@ function WishList(props) {
           open={viewProductOpen}
           setOpen={setViewProductOpen}
           listProduct={listWishlistItems}
-          products={wishlistItem}
+          products={wishlistItem.results}
+          dashboardMenu={props.dashboardMenu}
         />
       ) : (
         ""
