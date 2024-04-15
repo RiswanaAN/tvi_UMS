@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import PaginationTable from "../../components/Pagination/Pagination";
 import ViewUP from "../UserProducts/ViewUP";
 import ProductImage from "../../assets/imageProduct.png";
 import { BiDollar } from "react-icons/bi";
@@ -38,19 +37,18 @@ function CartList(props) {
 
   return (
     <div className="flex flex-col justify-center items-center ">
-      <div className="flex justify-evenly gap-[75px] flex-wrap p-7">
+      <div className="flex justify-evenly gap-[75px] flex-wrap p-7 ">
         {cartItems?.results?.map((items) => {
-          
           if (items.image.length > 0) {
             const image = items.image[0];
             var imageUrl = `data:image/jpeg;base64,${image}`;
           }
           return (
             <>
-              <button className="bg-[#e9ecef] flex flex-col w-[280px] h-[300px] rounded-lg items-center shadow-xl relative hover:scale-110">
+              <button className="bg-[#e9ecef] flex flex-col w-[280px] h-[320px] rounded-lg items-center shadow-xl relative hover:scale-110">
                 <div
                   onClick={() => viewProductDetails(items.productId)}
-                  className="mt-[40px] w-full h-full flex flex-col justify-center items-center"
+                  className="w-full h-full flex flex-col justify-center items-center"
                 >
                   <div>
                     {items.image.length > 0 ? (
@@ -76,9 +74,19 @@ function CartList(props) {
           );
         })}
       </div>
-      {/* <div className="m-4">
-        <PaginationTable totalNumber={totalProduct} currentPage={currentPage} />
-      </div> */}
+      <div className="flex items-center justify-center">
+        <div className="flex justify-between items-center gap-[950px] p-[25px] m-[10px] border rounded-lg">
+          <p>Price</p>
+          <button
+            className="btn2 hover:opacity-[0.8] w-[150px]"
+            onClick={() => {
+              props.dashboardMenu("buyproduct","","","","", "fromCartPage");
+            }}
+          >
+            Place Order
+          </button>
+        </div>
+      </div>
       {viewProductOpen ? (
         <ViewUP
           currentPage={props.selectedMenu}

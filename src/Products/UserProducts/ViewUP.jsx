@@ -219,7 +219,9 @@ export default function ViewUP(props) {
                       props.dashboardMenu(
                         "buyproduct",
                         props.products,
-                        props.viewId
+                        props.viewId,
+                        "","",
+                        "fromSingleProductPage"
                       )
                     }
                   >

@@ -6,12 +6,19 @@ import { BsHouseAdd } from "react-icons/bs";
 import { LiaEdit } from "react-icons/lia";
 import { AiOutlineDelete } from "react-icons/ai";
 import { TiTick } from "react-icons/ti";
+import DeleteConfirmation from "./DeleteConfirmation";
 
 export default function AddressModal(props) {
   const [addresses, setAddresses] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [addr_Id, setAddr_Id] = React.useState("");
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
-  const [selectedAddress, setSelectedAddress] = React.useState({})
+  const [selectedAddress, setSelectedAddress] = React.useState({});
+  function handleOpen(id) {
+    setAddr_Id(id);
+    setOpen(true);
+  }
   function viewSingleAddress() {
     axios
       .get("http://localhost:8000/api/address-view", {
@@ -25,27 +32,12 @@ export default function AddressModal(props) {
       });
   }
   React.useEffect(() => {
-    console.log(props);
+    console.log('addressModal',props);
     viewSingleAddress();
   }, []);
-  function deleteAddress(id) {
-    axios
-      .delete("http://localhost:8000/api/delete-address/" + id, {
-        headers: {
-          Authorization: tokenFromLS || adminToken,
-          genericvalue: "agent",
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        // console.log(addresses);
-        props.dashboardMenu("addressList");
-        viewSingleAddress();
-      });
-  }
 
   function editAddress(address, id) {
-    props.dashboardMenu("editaddress", "", id,address);
+    props.dashboardMenu("editaddress", "", id, address);
   }
 
   return (
@@ -58,10 +50,17 @@ export default function AddressModal(props) {
               <h1>Delivery Address</h1>
             </div>
             <div>
-            <button
+              <button
                 className="btn m-4"
                 onClick={() => {
-                  props.dashboardMenu("buyproduct",props.products, props.pId, selectedAddress);
+                  props.dashboardMenu(
+                    "buyproduct",
+                    props.products,
+                    props.pId,
+                    selectedAddress,
+                    "",
+                    props.fromPage
+                  );
                 }}
               >
                 <TiTick />
@@ -69,7 +68,7 @@ export default function AddressModal(props) {
               <button
                 className="btn m-4"
                 onClick={() => {
-                  props.dashboardMenu("addaddress","", "", addresses);
+                  props.dashboardMenu("addaddress", "", "", addresses);
                 }}
               >
                 <BsHouseAdd />
@@ -80,8 +79,13 @@ export default function AddressModal(props) {
         <div id="modal-modal-description" sx={{ mt: 2 }}>
           <div className="flex flex-col justify-between">
             {addresses.map((address, i) => (
-              <div className="flex items-center justify-between" onClick={()=>{setSelectedAddress(address)}}>
-                
+              <div
+                key={i}
+                className="flex items-center justify-between"
+                onClick={() => {
+                  setSelectedAddress(address);
+                }}
+              >
                 <div className="flex items-center justify-between">
                   <input type="radio" id={i} value={address} name={address} />
                   <label
@@ -113,9 +117,7 @@ export default function AddressModal(props) {
                   <div>
                     <button
                       className="btn m-4 "
-                      onClick={() => {
-                        deleteAddress(address._id);
-                      }}
+                      onClick={() => handleOpen(address._id)}
                     >
                       <AiOutlineDelete />
                     </button>
@@ -123,6 +125,18 @@ export default function AddressModal(props) {
                 </div>
               </div>
             ))}
+            {open ? (
+              <DeleteConfirmation
+                open={open}
+                setOpen={setOpen}
+                handleOpen={handleOpen}
+                id={addr_Id}
+                viewSingleAddress={viewSingleAddress}
+                dashboardMenu={props.dashboardMenu}
+              />
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>

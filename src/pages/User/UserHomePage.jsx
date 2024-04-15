@@ -18,7 +18,7 @@ function UserHomePage() {
   const [products, setProducts] = useState({});
   const [address, setAddress] = useState({});
   const [allAddress, setAllAddress] = useState([]);
-
+  const [fromPage, setFromPage]= useState("")
   const [pId, setPId] = useState("");
   const [user, setUser] = useState({});
   const [icon, setIcon] = useState("");
@@ -46,17 +46,18 @@ function UserHomePage() {
   function clickMenuButton() {
     setMenuClicks((prev) => !prev);
   }
-  const dashboardMenu = (msg, products, viewId, address, allAddress) => {
+  const dashboardMenu = (msg, products, viewId, address, allAddress, fromPage) => {
     setSelectedMenu(msg);
     setProducts(products);
     setPId(viewId);
     setAddress(address);
     setAllAddress(allAddress)
-    console.log("=========", allAddress);
+    setFromPage(fromPage)
+
   };
 
   return (
-    <div className="flex flex-col w-screen">
+    <div className="flex flex-col w-screen ">
       <div className="w-full">
         <UserNavbar clickMenuButton={clickMenuButton} icon={icon} />
       </div>
@@ -146,8 +147,8 @@ function UserHomePage() {
                 address={address}
                 products={products}
                 pId={pId}
+                fromPage= {fromPage}
               />
-              {/* {console.log(products)} */}
             </div>
           </div>
         ) : selectedMenu == "addressList" ? (
@@ -164,9 +165,9 @@ function UserHomePage() {
                 products={products}
                 pId={pId}
                 dashboardMenu={dashboardMenu}
+                fromPage={fromPage}
               />
 
-              {/* {console.log(products)} */}
             </div>
           </div>
         ) : selectedMenu == "addaddress" ? (
