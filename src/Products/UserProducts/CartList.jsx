@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ViewUP from "../UserProducts/ViewUP";
 import ProductImage from "../../assets/imageProduct.png";
-import { BiDollar } from "react-icons/bi";
+import { FaIndianRupeeSign } from "react-icons/fa6";
+import EmptyCartImage from "../../assets/cart.png";
 import "../../Products/AdminProducts/AdminProductHome.css";
 
 function CartList(props) {
@@ -34,59 +35,74 @@ function CartList(props) {
   useEffect(() => {
     listCartItems();
   }, []);
-
   return (
-    <div className="flex flex-col justify-center items-center ">
-      <div className="flex justify-evenly gap-[75px] flex-wrap p-7 ">
-        {cartItems?.results?.map((items) => {
-          if (items.image.length > 0) {
-            const image = items.image[0];
-            var imageUrl = `data:image/jpeg;base64,${image}`;
-          }
-          return (
-            <>
-              <button className="bg-[#e9ecef] flex flex-col w-[280px] h-[320px] rounded-lg items-center shadow-xl relative hover:scale-110">
-                <div
-                  onClick={() => viewProductDetails(items.productId)}
-                  className="w-full h-full flex flex-col justify-center items-center"
-                >
-                  <div>
-                    {items.image.length > 0 ? (
-                      <img
-                        src={imageUrl}
-                        alt={items.title}
-                        className="w-[130px] m-6"
-                      />
-                    ) : (
-                      <img src={ProductImage} className="w-[130px] m-6"></img>
-                    )}
-                  </div>
-                  <div className="flex flex-col justify-center items-center">
-                    <h1>{items.title}</h1>
-                    <div className="flex items-center">
-                      <BiDollar />
-                      <p>{items.discountedPrice}</p>
+    <div className="flex flex-col justify-center items-center w-full">
+      
+      <div className="flex justify-evenly gap-[75px] flex-wrap p-7 w-full">
+        {cartItems.results && cartItems.results.length > 0 ? ( // Check if cartItems is not empty
+          cartItems.results.map((items) => {
+            if (items.image.length > 0) {
+              const image = items.image[0];
+              var imageUrl = `data:image/jpeg;base64,${image}`;
+            }
+            return (
+              <>
+                <button className="bg-[#e9ecef] flex flex-col w-[280px] h-[320px] rounded-lg items-center shadow-xl relative hover:scale-110">
+                  <div
+                    onClick={() => viewProductDetails(items.productId)}
+                    className="w-full h-full flex flex-col justify-center items-center"
+                  >
+                    <div>
+                      {items.image.length > 0 ? (
+                        <img
+                          src={imageUrl}
+                          alt={items.title}
+                          className="w-[130px] m-6"
+                        />
+                      ) : (
+                        <img src={ProductImage} className="w-[130px] m-6"></img>
+                      )}
+                    </div>
+                    <div className="flex flex-col justify-center items-center">
+                      <h1>{items.title}</h1>
+                      <div className="flex items-center">
+                      <FaIndianRupeeSign className="text-[15px] text-gray-800" />
+                        <p>{items.discountedPrice}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </button>
-            </>
-          );
-        })}
+                </button>
+              </>
+            );
+          })
+        ) : (
+          // If cartItems is empty, display "Empty cart"
+          <div className="text-center text-gray-500 text-[30px] italic flex ">
+            <img src={EmptyCartImage}/>
+          </div>
+        )}
       </div>
-      <div className="flex items-center justify-center">
-        <div className="flex justify-between items-center gap-[950px] p-[25px] m-[10px] border rounded-lg">
-          <p>Price</p>
-          <button
-            className="btn2 hover:opacity-[0.8] w-[150px]"
-            onClick={() => {
-              props.dashboardMenu("buyproduct","","","","", "fromCartPage");
-            }}
-          >
-            Place Order
-          </button>
+      {cartItems.results && cartItems.results.length > 0 && ( // Check if cartItems is not empty to display the "Continue" button
+        <div className="flex items-center justify-center w-full">
+          <div className="flex justify-between items-center w-full p-[25px]  m-[10px] border rounded-lg">
+            <div className="flex text-[20px] items-center italic">
+              <p>Total Cost: </p>
+              <div className="flex items-center pl-4  text-green-700">
+              <FaIndianRupeeSign className="text-[15px] text-gray-800" />
+              <p className="text-[25px]">{cartItems.total} /-</p>
+              </div>
+            </div>
+            <button
+              className="btn2 hover:opacity-[0.8] w-[150px]"
+              onClick={() => {
+                props.dashboardMenu("buyproduct", "", "", "", "", "fromCartPage");
+              }}
+            >
+              Continue
+            </button>
+          </div>
         </div>
-      </div>
+      )}
       {viewProductOpen ? (
         <ViewUP
           currentPage={props.selectedMenu}

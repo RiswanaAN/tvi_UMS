@@ -95,14 +95,14 @@ export default function AdminProductView(props) {
             sx={{ mt: 2 }}
             className="flex justify-center"
           >
-            <div className="flex gap-[50px]">
+            <div className="flex gap-[0px]">
               <div>
                 {/* {console.log(singleProduct.image.length)} */}
                 {productImageUrl? (
                   <img
                     src={productImageUrl}
                     alt="User"
-                    className="h-[300px] w-[250px]"
+                    className="h-[300px] w-[350px]"
                   />
                 ) : (
                   <img src={ProductImage} className="h-[300px] w-[250px]"></img>

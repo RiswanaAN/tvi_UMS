@@ -137,7 +137,7 @@ export default function ViewUP(props) {
                   <img src={ProductImage} className="h-[300px] w-[250px]"></img>
                 )}{" "}
               </div>
-              <div className="flex flex-col ml-[30px] w-[400px]  pr-[55px] items-center">
+              <div className="flex flex-col ml-[30px] w-[350px]  pr-[55px] items-center">
                 <h1 className="text-[25px] ">{singleProduct.title}</h1>
                 <div className="flex items-center justify-center">
                   <FaIndianRupeeSign className="text-[18px] text-gray-800" />

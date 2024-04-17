@@ -1,26 +1,29 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AddressModal from "./UserAddress/AddressModal";
 import ProductImage from "../../assets/imageProduct.png";
 import { BsCart3 } from "react-icons/bs";
 import { FaRegAddressCard } from "react-icons/fa";
 import { LiaRupeeSignSolid } from "react-icons/lia";
+import { FaIndianRupeeSign } from "react-icons/fa6";
+
 import "./ListUP.css";
+import PlaceOrderConfirm from "./PlaceOrderConfirm";
 
 function BuyProduct(props) {
   const [addresses, setAddresses] = useState([]);
   const [singleAddresses, setSingleAddresses] = useState({});
   const [singleProduct, setSingleProduct] = useState({});
   const [cartProducts, setCartProducts] = useState([]);
-  const [fromPage, setFromPage]= useState("")
+  const [fromPage, setFromPage] = useState("");
   const [productImageUrl, setProductImageUrl] = React.useState("");
   const [quantity, setQuantity] = useState("1");
   const [openAddressModal, setOpenAddressModal] = React.useState(false);
+  const [placeOrderConfirm, setPlaceOrderConfirm] = React.useState(false);
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
-  
+
   function viewSingleAddress() {
     axios
       .get("http://localhost:8000/api/address-view", {
@@ -38,9 +41,8 @@ function BuyProduct(props) {
   }
   useEffect(() => {
     viewSingleAddress();
-    console.log("Checking which page==", props);
     if (props.fromPage == "fromSingleProductPage") {
-      setFromPage(props.fromPage)
+      setFromPage(props.fromPage);
       setSingleProduct(
         props.products.find((product) => product._id == props.pId)
       );
@@ -49,11 +51,12 @@ function BuyProduct(props) {
         const base64String = btoa(
           String.fromCharCode(...new Uint8Array(image))
         );
+
         var imageUrl = `data:image/jpeg;base64,${base64String}`;
         setProductImageUrl(imageUrl);
-      }, "1000");
+      }, 1000);
     } else {
-      setFromPage(props.fromPage)
+      setFromPage(props.fromPage);
       axios
         .get("http://localhost:8000/api/cart", {
           headers: {
@@ -64,19 +67,59 @@ function BuyProduct(props) {
         .then((response) => {
           setCartProducts(response.data.results[0]);
         });
-        let sum = 0;
+      let sum = 0;
 
-        // Assuming cartProducts is defined elsewhere in your code
-        setTimeout(() => {
-          cartProducts.map((prdt) => {
-            sum = sum + prdt.discountedPrice;
-            console.log("products====",prdt);
-          });
-          console.log(sum);
-        }, 1000);
-        
+      setTimeout(() => {
+        cartProducts.map((prdt) => {
+          sum = sum + prdt.discountedPrice;
+
+        });
+        // console.log(sum);
+      }, 1000);
+    }
+  }, []);
+
+  //place single product
+  function placeSingleProduct(id){
+    const addId = singleAddresses._id;
+    axios
+    .post(
+      "http://localhost:8000/api/orderSingle/"+id,
+      {
+        addId,
+      },
+      {
+        headers: {
+          Authorization: adminToken || tokenFromLS,
+          genericvalue: "agent",
+        },
       }
-    }, []);
+    )
+    .then((response) => {
+      setPlaceOrderConfirm(true);
+    });
+  }
+
+  //place the order
+  function placeYourOrder() {
+    const addId = singleAddresses._id;
+    axios
+      .post(
+        "http://localhost:8000/api/order",
+        {
+          addId,
+        },
+        {
+          headers: {
+            Authorization: adminToken || tokenFromLS,
+            genericvalue: "agent",
+          },
+        }
+      )
+      .then((response) => {
+        setPlaceOrderConfirm(true);
+      });
+  }
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -86,7 +129,7 @@ function BuyProduct(props) {
       >
         Back
       </button>
-      <div className="rounded-lg bg-[#e9ecef] w-[900px] ml-7 mr-7">
+      <div className="rounded-lg bg-[#e9ecef] w-full ml-7 mr-7">
         <div className="border-b-white border-b-4 gap-3 p-3 flex  items-center justify-start pl-7 uppercase text-[18px]">
           <FaRegAddressCard />
           <h1>Delivery Address</h1>
@@ -111,7 +154,14 @@ function BuyProduct(props) {
             <button
               className="btn w-[150px] m-4"
               onClick={() =>
-                props.dashboardMenu("addressList", props.products, props.pId,"","",props.fromPage)
+                props.dashboardMenu(
+                  "addressList",
+                  props.products,
+                  props.pId,
+                  "",
+                  "",
+                  props.fromPage
+                )
               }
             >
               Change
@@ -120,14 +170,14 @@ function BuyProduct(props) {
         </div>
       </div>
       {/* //cart items */}
-      <div className="rounded-lg bg-[#e9ecef] w-[900px] ml-7 mr-7 mt-2">
+      <div className="rounded-lg bg-[#e9ecef] w-full ml-7 mr-7 mt-2">
         <div className="border-b-white border-b-4 gap-3 p-3 flex  items-center justify-start pl-7 uppercase text-[18px]">
           <BsCart3 />
 
           <h1>Products</h1>
         </div>
         {props.fromPage == "fromSingleProductPage" ? (
-          <div className="flex justify-between pb-4 border border-red-700">
+          <div className="flex justify-between pb-4 border">
             <div className="flex flex-col items-center">
               <div className="flex flex-col p-6 uppercase  text-md">
                 {productImageUrl ? (
@@ -140,6 +190,7 @@ function BuyProduct(props) {
                   <img src={ProductImage} className="h-[100px] w-[150px]"></img>
                 )}
               </div>
+              <p className="text-[20px] italic">{singleProduct.title}</p>
               <select
                 className="border bg-white pr-5 pl-5 pt-2 pb-2 text-lg font-semibold hover:cursor-pointer rounded-2xl"
                 onChange={(e) => {
@@ -189,7 +240,10 @@ function BuyProduct(props) {
                 </p>
               </div>
               <div className="flex justify-center ml-[20px]">
-                <button className="btn bg-[#2f4f4f] text-white hover:bg-white hover:text-[#2f4f4f] w-full m-4">
+                <button
+                  className="btn bg-[#2f4f4f] text-white hover:bg-white hover:text-[#2f4f4f] w-full m-4"
+                  onClick={()=>placeSingleProduct(singleProduct._id)}
+                >
                   Place Order
                 </button>
               </div>
@@ -202,10 +256,9 @@ function BuyProduct(props) {
                 <div className="flex gap-[255px]">
                   <div className="flex flex-col items-center">
                     <div className="flex flex-col p-6 uppercase  text-md">
-                      {console.log(cartProduct)}
-                      {productImageUrl ? (
+                      {cartProduct.image[0] ? (
                         <img
-                          src={productImageUrl}
+                          src={`data:image/jpeg;base64,${cartProduct.image[0]}`}
                           alt="User"
                           className="h-[100px] w-[100px]"
                         />
@@ -216,7 +269,7 @@ function BuyProduct(props) {
                         ></img>
                       )}
                     </div>
-                    <p>{cartProduct.title}</p>
+
                     <select
                       className="border bg-white pr-5 pl-5 pt-2 pb-2 w-[100px] text-lg font-semibold hover:cursor-pointer rounded-2xl"
                       onChange={(e) => {
@@ -231,30 +284,26 @@ function BuyProduct(props) {
                     </select>
                   </div>
                   <div className="p-5 mr-[60px] w-[400px] ">
+                    <p>{cartProduct.title}</p>
                     <div className="flex justify-between">
                       <p>Discounted Price:</p>
                       <div className=" gap-3 items-center">
                         <p className="flex items-center text-lg text-green-600">
                           <LiaRupeeSignSolid />
-                          {cartProduct.price * quantity}/-
+                          {cartProduct.discountedPrice * quantity}/-
                         </p>
-                        
                       </div>
                     </div>
                     <div className="flex justify-between border pb-2  w-[400px]">
                       <p>Price:</p>
                       <div className="flex  items-center">
                         <LiaRupeeSignSolid />
-                        <p className="line-through mr-[30px]">{cartProduct.discountedPrice * quantity}/-</p>
+                        <p className="line-through mr-[30px]">
+                          {cartProduct.price * quantity}/-
+                        </p>
                       </div>
                     </div>
-                    {/* <div className="flex justify-between text-2xl mt-4 italic text-red-800">
-                      <p>Order Total:</p>
-                      <div className="flex items-center">
-                        <LiaRupeeSignSolid />
-                        <p>{cartProduct.discountedPrice * quantity}/-</p>
-                      </div>
-                    </div> */}
+
                     <div className="flex mt-[25px] gap-2 italic text-green-600">
                       <p>You saved:</p>
                       <p>
@@ -269,20 +318,44 @@ function BuyProduct(props) {
             ))}
           </>
         )}
-        <div className="flex justify-center ml-[20px]">
-          <button className="btn bg-[#2f4f4f] text-white hover:bg-white hover:text-[#2f4f4f] w-full m-4">
-            Place Order
-          </button>
-        </div>
-        {console.log(fromPage)}
+        {props.fromPage == "fromCartPage" ? (
+          <div className="flex items-center  w-full ">
+            <div className="flex  items-center justify-between w-full p-[25px] m-[10px] border bg-gray-300 rounded-lg">
+              <div className="flex text-[20px] items-center">
+                <p>Total Cost: </p>
+                <div className="flex items-center pl-4  text-green-700">
+                  <FaIndianRupeeSign className="text-[15px] text-gray-800" />
+                  <p className="text-[25px]">{cartProducts.total} /-</p>
+                </div>
+              </div>
+              <button
+                className="btn hover:opacity-[0.8] w-[150px]"
+                onClick={placeYourOrder}
+              >
+                Place Order
+              </button>
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
+
       {openAddressModal ? (
         <AddressModal
           open={openAddressModal}
           setOpen={setOpenAddressModal}
           addresses={addresses}
           dashboardMenu={props.dashboardMenu}
-          nextPage= {fromPage}
+          nextPage={fromPage}
+        />
+      ) : (
+        ""
+      )}
+      {placeOrderConfirm ? (
+        <PlaceOrderConfirm
+          open={placeOrderConfirm}
+          setOpen={setPlaceOrderConfirm}
         />
       ) : (
         ""
