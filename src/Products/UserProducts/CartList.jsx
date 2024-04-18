@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import ViewUP from "../UserProducts/ViewUP";
 import ProductImage from "../../assets/imageProduct.png";
 import { FaIndianRupeeSign } from "react-icons/fa6";
-import EmptyCartImage from "../../assets/cart.png";
+import EmptyCartImage from "../../assets/emptycart.jpg";
 import "../../Products/AdminProducts/AdminProductHome.css";
 
 function CartList(props) {
@@ -37,9 +37,8 @@ function CartList(props) {
   }, []);
   return (
     <div className="flex flex-col justify-center items-center w-full">
-      
-      <div className="flex justify-evenly gap-[75px] flex-wrap p-7 w-full">
-        {cartItems.results && cartItems.results.length > 0 ? ( // Check if cartItems is not empty
+      <div className="flex justify-evenly gap-[75px] flex-wrap  w-full">
+        {cartItems?.results?.length > 0 ? ( // Check if cartItems is not empty
           cartItems.results.map((items) => {
             if (items.image.length > 0) {
               const image = items.image[0];
@@ -66,7 +65,7 @@ function CartList(props) {
                     <div className="flex flex-col justify-center items-center">
                       <h1>{items.title}</h1>
                       <div className="flex items-center">
-                      <FaIndianRupeeSign className="text-[15px] text-gray-800" />
+                        <FaIndianRupeeSign className="text-[15px] text-gray-800" />
                         <p>{items.discountedPrice}</p>
                       </div>
                     </div>
@@ -77,25 +76,39 @@ function CartList(props) {
           })
         ) : (
           // If cartItems is empty, display "Empty cart"
-          <div className="text-center text-gray-500 text-[30px] italic flex ">
-            <img src={EmptyCartImage}/>
+          <div className="text-center text-gray-800 text-[25px] flex flex-col">
+            <img src={EmptyCartImage} className="w-[0px]"/>
+            <p className="text-3xl">Your Cart is Empty!!!</p>
+            <button
+              className="border p-3 mt-7 text-xl text-white bg-gray-600 shadow-xl rounded-lg hover:bg-white hover:text-gray-600 hover:border-gray-700 "
+              onClick={() => props.dashboardMenu("store")}
+            >
+              Shop Now
+            </button>
           </div>
         )}
       </div>
-      {cartItems.results && cartItems.results.length > 0 && ( // Check if cartItems is not empty to display the "Continue" button
+      {cartItems.results && cartItems.results.length > 0 && (
         <div className="flex items-center justify-center w-full">
           <div className="flex justify-between items-center w-full p-[25px]  m-[10px] border rounded-lg">
             <div className="flex text-[20px] items-center italic">
               <p>Total Cost: </p>
               <div className="flex items-center pl-4  text-green-700">
-              <FaIndianRupeeSign className="text-[15px] text-gray-800" />
-              <p className="text-[25px]">{cartItems.total} /-</p>
+                <FaIndianRupeeSign className="text-[15px] text-gray-800" />
+                <p className="text-[25px]">{cartItems.total} /-</p>
               </div>
             </div>
             <button
               className="btn2 hover:opacity-[0.8] w-[150px]"
               onClick={() => {
-                props.dashboardMenu("buyproduct", "", "", "", "", "fromCartPage");
+                props.dashboardMenu(
+                  "buyproduct",
+                  "",
+                  "",
+                  "",
+                  "",
+                  "fromCartPage"
+                );
               }}
             >
               Continue

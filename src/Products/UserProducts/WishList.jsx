@@ -4,12 +4,12 @@ import { useSelector } from "react-redux";
 import ViewUP from "../UserProducts/ViewUP";
 import ProductImage from "../../assets/imageProduct.png";
 import { BiDollar } from "react-icons/bi";
+import EmptyWishList from "../../assets/emptyWishlist.jpg";
 import "../../Products/AdminProducts/AdminProductHome.css";
 
 function WishList(props) {
   const [wishlistItem, setWishlistItem] = useState([]);
   const [viewId, setViewId] = useState("");
-
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
   //viewProduct
@@ -38,9 +38,19 @@ function WishList(props) {
 
   return (
     <div className="flex flex-col justify-center items-center ">
+      {wishlistItem?.results?.length === 0 && (
+        <div className="text-center text-gray-500 mt-[50px]">
+          <img src={EmptyWishList} />
+          <button className="border p-3 pr-8 pl-8 text-xl text-white bg-gray-600 shadow-xl rounded-lg hover:bg-white hover:text-gray-600 hover:border-gray-700 "
+          onClick={()=>props.dashboardMenu("store")}
+          >
+            Shop Now
+          </button>
+        </div>
+      )}
       <div className="flex justify-evenly gap-[75px] flex-wrap p-7">
         {wishlistItem?.results?.map((wishlistItem) => {
-           if (wishlistItem.image.length > 0) {
+          if (wishlistItem.image.length > 0) {
             const image = wishlistItem.image[0];
             var imageUrl = `data:image/jpeg;base64,${image}`;
           }
@@ -52,7 +62,7 @@ function WishList(props) {
                   className="mt-[40px] w-full h-full flex flex-col justify-center items-center"
                 >
                   <div>
-                  {wishlistItem.image.length > 0 ? (
+                    {wishlistItem.image.length > 0 ? (
                       <img
                         src={imageUrl}
                         alt={wishlistItem.title}
@@ -60,7 +70,8 @@ function WishList(props) {
                       />
                     ) : (
                       <img src={ProductImage} className="w-[130px] m-6"></img>
-                    )}                  </div>
+                    )}
+                  </div>
                   <div className="flex flex-col justify-center items-center">
                     <h1>{wishlistItem.title}</h1>
                     <div className="flex items-center">
@@ -74,9 +85,6 @@ function WishList(props) {
           );
         })}
       </div>
-      {/* <div className="m-4">
-        <PaginationTable totalNumber={totalProduct} currentPage={currentPage} />
-      </div> */}
       {viewProductOpen ? (
         <ViewUP
           currentPage={props.selectedMenu}
@@ -90,10 +98,6 @@ function WishList(props) {
       ) : (
         ""
       )}
-      <>
-
-
-      </>
     </div>
   );
 }

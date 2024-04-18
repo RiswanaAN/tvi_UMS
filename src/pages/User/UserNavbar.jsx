@@ -8,6 +8,7 @@ import Searchbar from "../../components/Searchbar";
 import Logout from "../../components/NavBar/Logout";
 import CartBadge from "../../components/Badge/CartBadge";
 import WishlistBadge from "../../components/Badge/WishlistBadge";
+import logo from "../../assets/logo1.jpg"
 
 function UserNavBar(props) {
   const [dropDown, setDropDown] = useState(false);
@@ -17,7 +18,8 @@ function UserNavBar(props) {
   return (
     <div className="flex place-content-between items-center bg-[#343a40] p-3 ">
       <div className="text-white flex gap-3 place-content-between items-center">
-        <h1 className="text-xl">User Management System</h1>
+        <img src={logo} className="w-[45px] rounded-full "></img>
+        <h1 className="text-2xl font-mono italic text-[Beige] uppercase">Shopping App</h1>
         <button
           onClick={props.clickMenuButton}
           className="border border-[#343a40] focus:outline-none focus:ring-5 focus:border-[#007bff] hover:text-white"

@@ -109,7 +109,7 @@ function ListUP(props) {
 
           return (
             <>
-              <button className="bg-[#e9ecef] flex flex-col w-[280px] h-[350px] rounded-lg items-center shadow-xl relative hover:scale-110">
+              <button className="bg-[#e9ecef] flex flex-col w-[280px] h-[350px] rounded-lg items-center shadow-xl relative hover:scale-110" key={i}>
                 <button
                   className="absolute text-xl  text-gray-700 right-2 top-2"
                   onClick={() => {
