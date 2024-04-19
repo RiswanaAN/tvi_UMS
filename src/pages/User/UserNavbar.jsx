@@ -48,7 +48,7 @@ function UserNavBar(props) {
 
             <IoMdArrowDropdown />
           </button>
-          {dropDown && <Logout />}
+          {dropDown && <Logout dashboardMenu={props.dashboardMenu}/>}
         </div>
       </div>
     </div>

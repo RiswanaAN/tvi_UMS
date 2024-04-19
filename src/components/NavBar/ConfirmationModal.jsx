@@ -66,7 +66,7 @@ export default function ConfirmationModal(props) {
       {/* <Button onClick={handleOpen}>Open modal</Button> */}
       <button
         onClick={props.handleOpen}
-        className="text-[black] flex items-center justify-center hover:text-[gray]"
+        className="text-gray-800 flex items-center justify-center hover:text-[gray]"
       >
         {props.message == "logout"
           ? "Logout"

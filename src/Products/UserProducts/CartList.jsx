@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import ViewUP from "../UserProducts/ViewUP";
 import ProductImage from "../../assets/imageProduct.png";
 import { FaIndianRupeeSign } from "react-icons/fa6";
-import EmptyCartImage from "../../assets/emptycart.jpg";
+import EmptyCartImage from "../../assets/emptycart1.png";
 import "../../Products/AdminProducts/AdminProductHome.css";
 
 function CartList(props) {
@@ -76,9 +76,9 @@ function CartList(props) {
           })
         ) : (
           // If cartItems is empty, display "Empty cart"
-          <div className="text-center text-gray-800 text-[25px] flex flex-col">
-            <img src={EmptyCartImage} className="w-[0px]"/>
-            <p className="text-3xl">Your Cart is Empty!!!</p>
+          <div className="text-center text-gray-800 text-[25px] flex flex-col w-[400px]">
+            <img src={EmptyCartImage}/>
+            {/* <p className="text-2xl">Ooops.......</p> */}
             <button
               className="border p-3 mt-7 text-xl text-white bg-gray-600 shadow-xl rounded-lg hover:bg-white hover:text-gray-600 hover:border-gray-700 "
               onClick={() => props.dashboardMenu("store")}

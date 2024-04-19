@@ -11,6 +11,7 @@ import BuyProduct from "../../Products/UserProducts/BuyProduct";
 import AddAddress from "../../Products/UserProducts/UserAddress/AddAddress";
 import EditAddress from "../../Products/UserProducts/UserAddress/EditAddress";
 import AddressModal from "../../Products/UserProducts/UserAddress/AddressModal";
+import MyOrderBill from "../../Products/UserProducts/MyOrderBill";
 
 function UserHomePage() {
   const [menuClicks, setMenuClicks] = useState(false);
@@ -18,7 +19,7 @@ function UserHomePage() {
   const [products, setProducts] = useState({});
   const [address, setAddress] = useState({});
   const [allAddress, setAllAddress] = useState([]);
-  const [fromPage, setFromPage]= useState("")
+  const [fromPage, setFromPage] = useState("");
   const [pId, setPId] = useState("");
   const [user, setUser] = useState({});
   const [icon, setIcon] = useState("");
@@ -46,20 +47,26 @@ function UserHomePage() {
   function clickMenuButton() {
     setMenuClicks((prev) => !prev);
   }
-  const dashboardMenu = (msg, products, viewId, address, allAddress, fromPage) => {
+  const dashboardMenu = (
+    msg,
+    products,
+    viewId,
+    address,
+    allAddress,
+    fromPage
+  ) => {
     setSelectedMenu(msg);
     setProducts(products);
     setPId(viewId);
     setAddress(address);
-    setAllAddress(allAddress)
-    setFromPage(fromPage)
-
+    setAllAddress(allAddress);
+    setFromPage(fromPage);
   };
 
   return (
     <div className="flex flex-col w-screen ">
       <div className="w-full">
-        <UserNavbar clickMenuButton={clickMenuButton} icon={icon} />
+        <UserNavbar clickMenuButton={clickMenuButton} icon={icon} dashboardMenu={dashboardMenu}/>
       </div>
       <div className="flex h-[100vh]">
         <div
@@ -147,7 +154,7 @@ function UserHomePage() {
                 address={address}
                 products={products}
                 pId={pId}
-                fromPage= {fromPage}
+                fromPage={fromPage}
               />
             </div>
           </div>
@@ -167,7 +174,6 @@ function UserHomePage() {
                 dashboardMenu={dashboardMenu}
                 fromPage={fromPage}
               />
-
             </div>
           </div>
         ) : selectedMenu == "addaddress" ? (
@@ -210,6 +216,21 @@ function UserHomePage() {
                 dashboardMenu={dashboardMenu}
               />
               {/* {console.log(products)} */}
+            </div>
+          </div>
+        ) : selectedMenu == "myOrder" ? (
+          <div className="flex flex-col w-full">
+            <div className="dashboard p-3 pl-6 text-[35px] text-[#212529]">
+              <h1 className="">My Order</h1>
+              <div className="w-full bg-[#e9ecef] rounded-md">
+                <p className="text-[15px] text-[#6c757d] p-[10px]">
+                  My Order
+                </p>
+              </div>
+            </div>
+
+            <div className="w-full">
+              <MyOrderBill dashboardMenu={dashboardMenu}/>
             </div>
           </div>
         ) : (
