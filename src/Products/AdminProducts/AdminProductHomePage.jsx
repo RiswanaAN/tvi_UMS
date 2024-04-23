@@ -89,7 +89,7 @@ function AdminProductHomePage() {
                 <div className="flex items-center">
                   <LiaRupeeSignSolid className="text-[12px] text-gray-800" />
                   <p className="text-[20px] text-gray-800">
-                    {product.discountedPrice}
+                  {product.price-(product.price*product.offer/100)}
                   </p>
                 </div>
                 <div className="flex items-center italic text-gray-700 gap-3">

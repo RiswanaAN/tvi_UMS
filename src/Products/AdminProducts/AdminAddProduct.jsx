@@ -8,6 +8,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ImageUpload from "../../components/ImageUpload/ImageUpload";
 
 const style = {
   position: "absolute",
@@ -28,7 +29,9 @@ export default function AdminAddProduct(props) {
   const [category, setCategory] = useState("");
   const [offer, setOffer] = useState("");
   const [stock, setStock] = useState("");
-
+  const [productPic, setProductPic] = useState("");
+  const [imagePath, setImagePath] = useState("");
+  const [imageFile, setImageFile] = useState({});
   const navigate = useNavigate();
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
@@ -46,6 +49,8 @@ export default function AdminAddProduct(props) {
     product.append("stock", stock);
     product.append("color", "red");
     product.append("availability", "yes");
+    product.append("image", imageFile)
+
     axios
       .post("http://localhost:8000/api/addProdt", product, {
         headers: {
@@ -56,11 +61,15 @@ export default function AdminAddProduct(props) {
       .then((response) => {
         console.log(response);
         props.setOpen(false);
-        props.listProduct()
+        props.listProduct();
         // navigate("/admin/product");
       });
   }
-
+ //uploadingImage
+ function UploadingImage(file, path) {
+  setImageFile(file)
+  setImagePath(path);
+}
   return (
     <div>
       <Modal
@@ -82,7 +91,15 @@ export default function AdminAddProduct(props) {
             id="modal-modal-description"
             className="flex flex-wrap justify-center items-center mt-2"
           >
-            <img src={ProductImage} className="w-[200px] h-[200px]"></img>
+            {/* {console.log(imageUrl)} */}
+             <img
+              src={
+                imagePath ? imagePath : ProductImage
+              }
+              className="w-[200px] h-[200px]"
+            ></img>
+            <ImageUpload UploadingImage={UploadingImage} />
+          
             <form className="w-full max-w-lg  justify-center flex flex-col">
               <div className="flex flex-wrap -mx-3  p-3 gap-5">
                 <div className="flex flex-col">

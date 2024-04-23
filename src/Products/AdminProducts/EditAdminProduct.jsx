@@ -15,7 +15,7 @@ const style = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: 600,
-  height: 700,
+  height: 720,
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 3,
@@ -27,15 +27,21 @@ export default function EditAdminProduct(props) {
   const [productDetails, setProductDetails] = useState("");
   const [category, setCategory] = useState("");
   const [stock, setStock] = useState("");
-  const [offer, setOffer]= useState("");
+  const [offer, setOffer] = useState("");
+  const [color, setColor] = useState("");
+  const [availability, setAvailability] = useState("");
   const [productPic, setProductPic] = useState("");
   const [imagePath, setImagePath] = useState("");
+  const [imageFile, setImageFile] = useState({});
 
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
   const handleClose = () => props.setOpen(false);
 
   useEffect(() => {
+    showDetails();
+  }, []);
+  function showDetails() {
     axios
       .get("http://localhost:8000/api/get-one/" + props.editPid, {
         headers: {
@@ -44,35 +50,40 @@ export default function EditAdminProduct(props) {
         },
       })
       .then((response) => {
-        console.log(response.data);
+        console.log("response",response.data);
         setProductName(response.data.result.title);
-        setProductPrice(response.data.result.discountedPrice);
+        setProductPrice(response.data.result.price);
         setProductDetails(response.data.result.description);
-        setCategory(response.data.result.categories);
+        setCategory(response.data.result.category);
         setStock(response.data.result.stock);
-        setOffer(response.data.result.offer)
-        const image = response.data.result.image?.data;
-        console.log(image);
+        setOffer(response.data.result.offer);
+        setColor(response.data.result.color);
+        setAvailability(response.data.result.availability);
+        const image = response.data.result.image[0]?.data;
         const base64String = btoa(
           String.fromCharCode(...new Uint8Array(image))
         );
-
-        setProductPic(base64String);
+        var imageUrl = `data:image/jpeg;base64,${base64String}`;
+        setProductPic(imageUrl);
       });
-  }, []);
-
+  }
   function editProductDetails(e) {
     e.preventDefault();
-  //Body should be send in form data
-    const updatedDetails= new FormData()
-    updatedDetails.append("title", productName)
-    updatedDetails.append("price", productPrice)
-    updatedDetails.append("description", productDetails)
-    updatedDetails.append("category", category)
-    updatedDetails.append("offer", offer)
-    updatedDetails.append("stock", stock)
-    updatedDetails.append("color", "red")
-    updatedDetails.append("availability", "yes")
+    //Body should be send in form data
+    const updatedDetails = new FormData();
+    if (imageFile) {
+      updatedDetails.append("image", imageFile);
+    }
+  
+    productName && updatedDetails.append("title", productName);
+    productPrice && updatedDetails.append("price", productPrice);
+    productDetails && updatedDetails.append("description", productDetails);
+    category && updatedDetails.append("category", category);
+    offer && updatedDetails.append("offer", offer);
+    stock && updatedDetails.append("stock", stock);
+    color && updatedDetails.append("color", color);
+    availability && updatedDetails.append("availability", availability);
+    console.log("Before====",updatedDetails);
     axios
       .put(
         "http://localhost:8000/api/updateProdt/" + props.editPid,
@@ -86,13 +97,17 @@ export default function EditAdminProduct(props) {
       )
       .then((response) => {
         console.log(response);
+        props.viewProduct();
+        props.listProduct()
         // props.setOpen(false);
-        handleClose()
+        handleClose();
+        // showDetails();
       });
   }
   //uploadingImage
-  function UploadingImage(e) {
-    setImagePath(e);
+  function UploadingImage(file, imageUrl) {
+    setImageFile(file);
+    setImagePath(imageUrl);
   }
 
   return (
@@ -122,6 +137,7 @@ export default function EditAdminProduct(props) {
               }
               className="w-[200px] h-[200px]"
             ></img>
+            
             <ImageUpload UploadingImage={UploadingImage} />
             {/* <img src={ProductImage} className="w-[200px] h-[200px]"></img> */}
             <form className="w-full max-w-lg  justify-center flex flex-col">
@@ -219,11 +235,45 @@ export default function EditAdminProduct(props) {
                   </label>
                   <input
                     type="text"
-                    htmlFor="ofer"
+                    htmlFor="offer"
                     className="bg-gray-200 text-gray-700 rounded-md  py-2 px-4 mb-3 focus:outline-none focus:bg-white"
                     placeholder="Offer in %"
                     value={offer}
                     onInput={(e) => setOffer(e.target.value)}
+                  ></input>
+                </div>
+              </div>
+              <div className="flex flex-wrap -mx-3  p-3 gap-5">
+                <div className="flex flex-col">
+                  <label
+                    id="color"
+                    className="text-gray-700 font-bold text-xs uppercase mb-2 "
+                  >
+                    Colour
+                  </label>
+                  <input
+                    type="text"
+                    htmlFor="color"
+                    className="bg-gray-200 text-gray-700 rounded-md  py-2 px-4 mb-3 focus:outline-none focus:bg-white"
+                    placeholder="Color"
+                    value={color}
+                    onInput={(e) => setColor(e.target.value)}
+                  ></input>
+                </div>
+                <div className="flex flex-col">
+                  <label
+                    id="availability"
+                    className="text-gray-700 font-bold text-xs uppercase mb-2 "
+                  >
+                    Availability 
+                  </label>
+                  <input
+                    type="text"
+                    htmlFor="availability"
+                    className="bg-gray-200 text-gray-700 rounded-md  py-2 px-4 mb-3 focus:outline-none focus:bg-white"
+                    placeholder="availability"
+                    value={availability}
+                    onInput={(e) => setAvailability(e.target.value)}
                   ></input>
                 </div>
               </div>

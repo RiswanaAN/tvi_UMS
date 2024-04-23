@@ -12,6 +12,7 @@ function Register() {
   const [lname, setLname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("12345678");
+  const [cPassword, setCPassword]= useState("")
   const [role, setRole] = useState("agent");
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS= window.localStorage.getItem("tokenStorage")
@@ -25,7 +26,8 @@ function Register() {
       role: role,
     };
 
-    axios
+    if(password==cPassword){
+      axios
       .post("http://localhost:8000/api/user", user, {
         headers: {
           genericvalue: "admin",
@@ -36,6 +38,10 @@ function Register() {
         navigate("/login/homePage");
       })
       .catch((error) => console.log("error"));
+    }else{
+      alert("Passwords are different");
+    }
+    
   }
   return (
     <div className="md:h-[100vh] bg-[#007bff] border flex flex-col items-center">
@@ -146,6 +152,9 @@ function Register() {
                   id="confirm_password"
                   className="bg-gray-50  focus:outline-none border border-gray-300 text-gray-900 rounded-md block w-full p-3 "
                   placeholder="Confirm password"
+                  required
+                  value={cPassword}
+                  onInput={(e) => setCPassword(e.target.value)}
                 />
               </div>
             </div>

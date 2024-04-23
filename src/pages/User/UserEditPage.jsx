@@ -13,7 +13,8 @@ function UserEditPage() {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   //image
-  const [imagePath, setImagePath]= useState("")
+  const [imagePath, setImagePath] = useState("");
+  const [imageFile, setImageFile] = useState({});
   const navigate = useNavigate();
   const adminToken = useSelector((state) => state.auth.adminToken);
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
@@ -34,11 +35,11 @@ function UserEditPage() {
   }, []);
 
   function editUser() {
-    const userD = {
-      firstName: firstName,
-      lastName: lastName,
-      imageURL: imagePath,
-    };
+    
+    const userD= new FormData()
+    userD.append("firstName", firstName)
+    userD.append("lastName", lastName)
+    userD.append("image", imagePath)
     axios
       .put("http://localhost:8000/api/me/update-user", userD, {
         headers: {
@@ -49,18 +50,19 @@ function UserEditPage() {
       .then((response) => {
 
         console.log(response);
-        moveToBack();
+        // moveToBack();
       })
       .catch((error) => {
         console.log(error.message);
       });
   }
   function moveToBack() {
-    navigate("/user/userHomepage");
+    navigate("/user/userdetails");
   }
   //uploadingImage
-  function UploadingImage(e){
-    setImagePath(e)
+  function UploadingImage(file, imageUrl) {
+    setImageFile(file)
+    setImagePath(imageUrl);
   }
   return (
     <div className="md:h-[100vh] border flex flex-col items-center">

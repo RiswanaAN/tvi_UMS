@@ -78,7 +78,6 @@ function CartList(props) {
           // If cartItems is empty, display "Empty cart"
           <div className="text-center text-gray-800 text-[25px] flex flex-col w-[400px]">
             <img src={EmptyCartImage}/>
-            {/* <p className="text-2xl">Ooops.......</p> */}
             <button
               className="border p-3 mt-7 text-xl text-white bg-gray-600 shadow-xl rounded-lg hover:bg-white hover:text-gray-600 hover:border-gray-700 "
               onClick={() => props.dashboardMenu("store")}

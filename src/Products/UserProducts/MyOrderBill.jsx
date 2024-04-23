@@ -24,7 +24,7 @@ function MyOrderBill() {
     showMyOrders();
   }, []);
   return (
-    <div className="flex flex-col justify-center items-center w-full gap-5 p-3">
+    <div className="flex flex-col justify-center items-center w-full gap-5 p-3 overflow-scroll h-[">
     
       {orderedProduct.map((item, i) => {
         if (item.product.image.length > 0) {

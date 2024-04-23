@@ -6,7 +6,7 @@ function ImageUpload(props) {
         if(file){
             const reader= new FileReader();
             reader.onload=()=>{
-                props.UploadingImage(reader.result)
+                props.UploadingImage(file,reader.result)
             }
             reader.readAsDataURL(file)
         };

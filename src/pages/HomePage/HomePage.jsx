@@ -54,31 +54,33 @@ function HomePage() {
                 <p className="text-[15px] text-[#6c757d] p-[10px]">Dashboard</p>
               </div>
             </div>
-            <div className="w-full flex gap-5 justify-evenly items-center">
-              <div className="border rounded-md">
-                <div className="border-b w-full p-2 pl-3 flex items-center gap-2 text-[#212529]">
-                  <FaChartArea />
-                  Area Chart
-                </div>
-                <div className="p-2">
-                  <ChartComponent />
-                </div>
-              </div>
-              <div>
+            <div className="w-full">
+              <div className="flex justify-evenly items-center">
                 <div className="border rounded-md">
-                  <div className="border-b w-full p-2 pl-3 flex items-center gap-2 text-[#212529]">
-                    <FaChartBar />
-                    Bar Chart
+                  <div className="border-b  p-2 pl-3 flex items-center  text-[#212529]">
+                    <FaChartArea />
+                    Area Chart
                   </div>
                   <div className="p-2">
-                    <BarChart />
+                    <ChartComponent />
+                  </div>
+                </div>
+                <div>
+                  <div className="border rounded-md">
+                    <div className="border-b  p-2 pl-3 flex items-center  text-[#212529]">
+                      <FaChartBar />
+                      Bar Chart
+                    </div>
+                    <div className="p-2">
+                      <BarChart />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="w-full">
-              <DataTable />
+              <div >
+                <DataTable />
+              </div>
             </div>
           </div>
         )}

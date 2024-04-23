@@ -40,6 +40,9 @@ export default function AdminProductView(props) {
   const tokenFromLS = window.localStorage.getItem("tokenStorage");
 
   React.useEffect(() => {
+    viewProduct();
+  }, []);
+  function viewProduct() {
     axios
       .get("http://localhost:8000/api/get-one/" + props.viewId, {
         headers: {
@@ -48,6 +51,7 @@ export default function AdminProductView(props) {
         },
       })
       .then((response) => {
+        console.log("heyy",response.data.result);
         setSingleProduct(response.data.result);
         // console.log(response.data.result.image[0]?.data)
         if (response.data.result.image.length > 0) {
@@ -60,7 +64,7 @@ export default function AdminProductView(props) {
           setProductImageUrl(imageUrl);
         }
       });
-  }, []);
+  }
   const handleClose = () => props.setOpen(false);
 
   function deleteProduct(id) {
@@ -97,8 +101,8 @@ export default function AdminProductView(props) {
           >
             <div className="flex gap-[0px]">
               <div>
-                {/* {console.log(singleProduct.image.length)} */}
-                {productImageUrl? (
+              
+                {productImageUrl ? (
                   <img
                     src={productImageUrl}
                     alt="User"
@@ -109,13 +113,13 @@ export default function AdminProductView(props) {
                 )}
               </div>
               <div className="flex flex-col w-[500px]  pr-[55px] items-center">
-                {console.log(singleProduct)}
                 <h1 className="text-[25px] ">{singleProduct.title}</h1>
                 <div className="flex items-center justify-center text-[25px]">
                   <LiaRupeeSignSolid className="text-[12px] text-gray-800" />
 
                   <p className="font-serif text-[30px]">
-                    {singleProduct.discountedPrice}
+                    {singleProduct.price -
+                      (singleProduct.price * singleProduct.offer) / 100}
                   </p>
                   <p className="italic text-sm pl-1"> /each</p>
                 </div>
@@ -165,6 +169,8 @@ export default function AdminProductView(props) {
           setOpen={setEditProductOpen}
           editPid={editPid}
           products={props.products}
+          listProduct={props.listProduct}
+          viewProduct={viewProduct}
         />
       ) : (
         ""

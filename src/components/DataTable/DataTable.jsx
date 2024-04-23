@@ -97,7 +97,7 @@ export default function DataTable() {
     {
       field: "_id",
       headerName: "ID",
-      width: 140,
+     
       headerClassName: "header-cell",
     },
     {
@@ -105,7 +105,7 @@ export default function DataTable() {
       headerName: "First Name",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
-      width: 170,
+    
       headerClassName: "header-cell",
     },
     {
@@ -113,25 +113,25 @@ export default function DataTable() {
       headerName: "Last Name",
       description: "This column has a value getter and is not sortable.",
       sortable: false,
-      width: 150,
+      // width: 150,
       headerClassName: "header-cell",
     },
     {
       field: "email",
       headerName: "Email",
-      width: 200,
+      // width: 200,
       headerClassName: "header-cell",
     },
     {
       field: "role",
       headerName: "Role",
-      width: 150,
+      // width: 150,
       headerClassName: "header-cell",
     },
     {
       field: "edit",
       headerName: "Edit",
-      width: 120,
+      // width: 120,
       renderCell: (params) => (
         <button
           className="edit-button"
@@ -145,7 +145,7 @@ export default function DataTable() {
     {
       field: "remove",
       headerName: "Remove",
-      width: 120,
+      // width: 120,
       renderCell: (params) => (
         <button
           className="delete-button"
@@ -159,7 +159,7 @@ export default function DataTable() {
     {
       field: "view",
       headerName: "View",
-      width: 120,
+      // width: 120,
       renderCell: (params) => (
         <button
           className="view-button"

@@ -89,7 +89,7 @@ function UserHomePage() {
             </div>
 
             <div className="w-full">
-              <UserDetails />
+              <UserDetails dashboardMenu={dashboardMenu}/>
             </div>
           </div>
         ) : selectedMenu == "store" ? (

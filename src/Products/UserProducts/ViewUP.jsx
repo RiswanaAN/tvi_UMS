@@ -44,6 +44,7 @@ export default function ViewUP(props) {
         },
       })
       .then((response) => {
+        console.log("view image==", response.data.result);
         setSingleProduct(response.data.result);
         setNoOfStock(response.data.result.stock);
         if (response.data.result.image.length > 0) {
